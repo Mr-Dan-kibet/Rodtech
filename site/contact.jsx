@@ -276,16 +276,17 @@ function ContactMethods({accent, phone, whatsappLabel}) {
               Fastest — Dan or the crew picks up.
             </div>
           </div>
-          <div style={{
+          <a href={`tel:${phone.replace(/\s/g, '').replace(/^0/, '+254')}`} style={{
             marginTop: 'auto', paddingTop: 16,
             display: 'inline-flex', alignItems: 'center', gap: 10,
             padding: '12px 18px', borderRadius: 999,
             background: '#fff', color: accent,
             fontSize: 14, fontWeight: 600, alignSelf: 'flex-start',
+            textDecoration: 'none',
           }}>
             Tap to call
             <span>→</span>
-          </div>
+          </a>
         </div>
 
         {/* WhatsApp — secondary (white) */}
@@ -325,16 +326,17 @@ function ContactMethods({accent, phone, whatsappLabel}) {
               Great for non-urgent — we'll triage before the visit.
             </div>
           </div>
-          <div style={{
+          <a href={`https://wa.me/${phone.replace(/\s/g, '').replace(/^0/, '254')}?text=Hello%20Rodtech!%20I%27d%20like%20help%20with%20an%20appliance%20repair.`} target="_blank" rel="noopener noreferrer" style={{
             marginTop: 'auto', paddingTop: 16,
             display: 'inline-flex', alignItems: 'center', gap: 10,
             padding: '12px 18px', borderRadius: 999,
             background: INK, color: '#fff',
             fontSize: 14, fontWeight: 600, alignSelf: 'flex-start',
+            textDecoration: 'none',
           }}>
             Open WhatsApp
             <span>→</span>
-          </div>
+          </a>
         </div>
       </div>
     </div>
@@ -636,15 +638,15 @@ function LocationCard({accent, address, email}) {
               <div>{email}</div>
             </div>
             <div style={{marginTop: 32}}>
-              <span style={{
+              <a href="https://www.google.com/maps/place/Rodtech+Ventures+Ltd/data=!4m2!3m1!1s0x0:0x2f5a344723835b4c?sa=X&ved=1t:2428&ictx=111" target="_blank" rel="noopener noreferrer" style={{
                 display: 'inline-flex', alignItems: 'center', gap: 10,
                 padding: '12px 18px', borderRadius: 999,
                 background: accent, color: '#fff',
-                fontSize: 14, fontWeight: 600,
+                fontSize: 14, fontWeight: 600, textDecoration: 'none',
               }}>
                 Open in Google Maps
                 <span>↗</span>
-              </span>
+              </a>
             </div>
           </div>
           <MapIllustration accent={accent}/>
