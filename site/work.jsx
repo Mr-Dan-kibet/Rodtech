@@ -54,7 +54,18 @@ const CASES = [
   },
 ];
 
+function useIsMobile(breakpoint = 768) {
+  const [mobile, setMobile] = React.useState(window.innerWidth < breakpoint);
+  React.useEffect(() => {
+    const handler = () => setMobile(window.innerWidth < breakpoint);
+    window.addEventListener('resize', handler);
+    return () => window.removeEventListener('resize', handler);
+  }, [breakpoint]);
+  return mobile;
+}
+
 function RodtechWork() {
+  const mobile = useIsMobile();
   return (
     <div style={{
       width: '100%', background: PAPER, color: INK,
@@ -62,7 +73,7 @@ function RodtechWork() {
     }}>
       <WorkNav/>
       <WorkHeader/>
-      <div style={{padding: '0 64px'}}>
+      <div style={{padding: mobile ? '0 20px' : '0 64px'}}>
         {CASES.map((c, i) => <CaseSpread key={i} {...c} index={i}/>)}
       </div>
       <WorkCTA/>
@@ -74,6 +85,9 @@ function RodtechWork() {
 // ──────────────────────────────────────────────────────────────────────────────
 
 function WorkNav() {
+  const mobile = useIsMobile();
+  const [open, setOpen] = React.useState(false);
+
   return (
     <div style={{
       position: 'sticky', top: 0, zIndex: 50,
@@ -81,37 +95,89 @@ function WorkNav() {
       WebkitBackdropFilter: 'blur(20px) saturate(160%)',
       backdropFilter: 'blur(20px) saturate(160%)',
       borderBottom: '1px solid rgba(235,232,225,0.6)',
-      display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-      padding: '20px 64px',
     }}>
-      <a href="Rodtech Home.html" style={{
-        textDecoration: 'none', color: INK,
-        fontSize: 26, fontWeight: 700, letterSpacing: '-0.02em',
-      }}>
-        rod<span style={{color: ACCENT}}>tech</span>
-      </a>
       <div style={{
-        display: 'flex', gap: 48, alignItems: 'center',
-        fontSize: 15, fontWeight: 500, color: INK,
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        padding: mobile ? '16px 20px' : '20px 64px',
       }}>
-        <a href="Rodtech Services.html" style={{color: INK, textDecoration: 'none'}}>Services</a>
-        <a href="Rodtech About.html" style={{color: INK, textDecoration: 'none'}}>About</a>
-        <span style={{color: ACCENT, fontWeight: 600}}>Our Work</span>
-        <span>Get in Touch</span>
-        <span style={{
-          padding: '10px 18px', borderRadius: 999, background: INK, color: '#fff',
-          fontSize: 14, fontWeight: 600,
+        <a href="Rodtech Home.html" style={{
+          textDecoration: 'none', color: INK,
+          fontSize: 26, fontWeight: 700, letterSpacing: '-0.02em',
         }}>
-          Call 0793 562 956
-        </span>
+          rod<span style={{color: ACCENT}}>tech</span>
+        </a>
+
+        {mobile ? (
+          <button
+            onClick={() => setOpen(o => !o)}
+            style={{
+              background: 'none', border: 'none', cursor: 'pointer',
+              padding: '4px 6px', display: 'flex', flexDirection: 'column',
+              gap: 5,
+            }}
+            aria-label="Toggle menu"
+          >
+            <span style={{display: 'block', width: 22, height: 2, background: INK, borderRadius: 2}}/>
+            <span style={{display: 'block', width: 22, height: 2, background: INK, borderRadius: 2}}/>
+            <span style={{display: 'block', width: 22, height: 2, background: INK, borderRadius: 2}}/>
+          </button>
+        ) : (
+          <div style={{
+            display: 'flex', gap: 48, alignItems: 'center',
+            fontSize: 15, fontWeight: 500, color: INK,
+          }}>
+            <a href="Rodtech Services.html" style={{color: INK, textDecoration: 'none'}}>Services</a>
+            <a href="Rodtech About.html" style={{color: INK, textDecoration: 'none'}}>About</a>
+            <span style={{color: ACCENT, fontWeight: 600}}>Our Work</span>
+            <a href="Rodtech Contact.html" style={{
+              padding: '10px 18px', borderRadius: 999, background: INK, color: '#fff',
+              fontSize: 14, fontWeight: 600, textDecoration: 'none',
+            }}>Contact us</a>
+          </div>
+        )}
       </div>
+
+      {mobile && open && (
+        <div style={{
+          borderTop: '1px solid rgba(235,232,225,0.6)',
+          padding: '12px 20px 20px',
+          display: 'flex', flexDirection: 'column',
+        }}>
+          {[
+            ['Services', 'Rodtech Services.html'],
+            ['About', 'Rodtech About.html'],
+            ['Our Work', 'Rodtech Our Work.html'],
+            ['Contact', 'Rodtech Contact.html'],
+          ].map(([label, href]) => (
+            <a key={label} href={href} style={{
+              color: INK, textDecoration: 'none',
+              fontSize: 16, fontWeight: 500,
+              padding: '12px 0',
+              borderBottom: '1px solid rgba(235,232,225,0.6)',
+            }}>
+              {label}
+            </a>
+          ))}
+          <div style={{marginTop: 16}}>
+            <a href="tel:0793562956" style={{
+              display: 'block', textAlign: 'center',
+              padding: '14px 20px', borderRadius: 999,
+              background: INK, color: '#fff',
+              fontSize: 15, fontWeight: 600, textDecoration: 'none',
+            }}>
+              Call 0793 562 956
+            </a>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
 
 function WorkHeader() {
+  const mobile = useIsMobile();
   return (
-    <div style={{padding: '60px 64px 60px'}}>
+    <div style={{padding: mobile ? '40px 20px' : '60px 64px 60px'}}>
       <div style={{
         fontFamily: '"IBM Plex Mono", monospace',
         fontSize: 11, letterSpacing: '0.18em', textTransform: 'uppercase',
@@ -123,19 +189,21 @@ function WorkHeader() {
       </div>
 
       <div style={{
-        display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: 80,
+        display: 'grid',
+        gridTemplateColumns: mobile ? '1fr' : '1.4fr 1fr',
+        gap: mobile ? 24 : 80,
         alignItems: 'end',
       }}>
         <h1 style={{
           margin: 0,
-          fontSize: 88, lineHeight: 0.98, fontWeight: 700,
+          fontSize: mobile ? 52 : 88, lineHeight: 0.98, fontWeight: 700,
           letterSpacing: '-0.04em',
         }}>
           A few jobs we're<br/>
           <span style={{color: ACCENT}}>proud of</span>.
         </h1>
         <div style={{
-          fontSize: 17, lineHeight: 1.55, color: '#3a3a4a', maxWidth: 420,
+          fontSize: mobile ? 15 : 17, lineHeight: 1.55, color: '#3a3a4a', maxWidth: 420,
         }}>
           Four cases out of the hundreds we've worked on since 2019.
           Picked because each shows something specific — a part
@@ -148,26 +216,33 @@ function WorkHeader() {
 }
 
 function CaseSpread({n, title, when, service, image, imagePos, story, aspect, index}) {
-  // Alternate layout — image-right on even indexes, image-left on odd
+  const mobile = useIsMobile();
+  // Alternate layout — image-right on even indexes, image-left on odd (desktop only)
   const imageRight = index % 2 === 0;
   return (
     <div style={{
-      padding: '100px 0',
+      padding: mobile ? '60px 0' : '100px 0',
       borderTop: index === 0 ? `1px solid #ebe8e1` : 'none',
       borderBottom: `1px solid #ebe8e1`,
     }}>
       <div style={{
         display: 'grid',
-        gridTemplateColumns: imageRight ? '1fr 1.4fr' : '1.4fr 1fr',
-        gap: 60, alignItems: 'center',
+        gridTemplateColumns: mobile ? '1fr' : (imageRight ? '1fr 1.4fr' : '1.4fr 1fr'),
+        gap: mobile ? 28 : 60,
+        alignItems: 'center',
       }}>
-        {!imageRight && <CaseImage src={image} pos={imagePos} aspect={aspect} n={n}/>}
+        {/* On desktop, image-left cases show image first */}
+        {!mobile && !imageRight && <CaseImage src={image} pos={imagePos} aspect={aspect} n={n}/>}
+
+        {/* On mobile, image always appears first */}
+        {mobile && <CaseImage src={image} pos={imagePos} aspect={mobile ? '16/9' : aspect} n={n}/>}
+
         <div>
           <div style={{
             fontFamily: '"IBM Plex Mono", monospace',
             fontSize: 11, letterSpacing: '0.18em', textTransform: 'uppercase',
             color: ACCENT, marginBottom: 22, fontWeight: 600,
-            display: 'flex', alignItems: 'center', gap: 14,
+            display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap',
           }}>
             <span>Case {n}</span>
             <span style={{opacity: 0.4}}>—</span>
@@ -175,20 +250,22 @@ function CaseSpread({n, title, when, service, image, imagePos, story, aspect, in
           </div>
           <h2 style={{
             margin: 0,
-            fontSize: 46, fontWeight: 700, lineHeight: 1.05,
+            fontSize: mobile ? 30 : 46, fontWeight: 700, lineHeight: 1.05,
             letterSpacing: '-0.03em',
           }}>
             {title}
           </h2>
           <p style={{
-            marginTop: 28, marginBottom: 0,
-            fontSize: 17, lineHeight: 1.6, color: '#3a3a4a',
+            marginTop: mobile ? 18 : 28, marginBottom: 0,
+            fontSize: mobile ? 15 : 17, lineHeight: 1.6, color: '#3a3a4a',
             maxWidth: 460,
           }}>
             {story}
           </p>
         </div>
-        {imageRight && <CaseImage src={image} pos={imagePos} aspect={aspect} n={n}/>}
+
+        {/* Desktop image-right */}
+        {!mobile && imageRight && <CaseImage src={image} pos={imagePos} aspect={aspect} n={n}/>}
       </div>
     </div>
   );
@@ -230,8 +307,9 @@ function CaseImage({src, pos, aspect, n}) {
 }
 
 function WorkCTA() {
+  const mobile = useIsMobile();
   return (
-    <div style={{padding: '120px 64px 100px'}}>
+    <div style={{padding: mobile ? '60px 20px' : '120px 64px 100px'}}>
       <div style={{
         textAlign: 'center', maxWidth: 720, margin: '0 auto',
       }}>
@@ -244,7 +322,7 @@ function WorkCTA() {
         </div>
         <h2 style={{
           margin: 0,
-          fontSize: 56, fontWeight: 700, lineHeight: 1.05,
+          fontSize: mobile ? 36 : 56, fontWeight: 700, lineHeight: 1.05,
           letterSpacing: '-0.03em',
         }}>
           Tell us what's<br/>
@@ -270,12 +348,14 @@ function WorkCTA() {
 }
 
 function SiteFooter() {
+  const mobile = useIsMobile();
   return (
-    <div style={{padding: '0 64px 60px'}}>
+    <div style={{padding: mobile ? '0 20px 40px' : '0 64px 60px'}}>
       <div style={{
         borderTop: '1px solid #ebe8e1', paddingTop: 50,
-        display: 'grid', gridTemplateColumns: '1.4fr 1fr 1fr 1fr',
-        gap: 40,
+        display: 'grid',
+        gridTemplateColumns: mobile ? '1fr' : '1.4fr 1fr 1fr 1fr',
+        gap: mobile ? 32 : 40,
       }}>
         <div>
           <div style={{fontSize: 26, fontWeight: 700, letterSpacing: '-0.02em'}}>
@@ -287,12 +367,20 @@ function SiteFooter() {
           </div>
         </div>
         <FooterCol title="Services" items={['Refrigeration', 'Electrical', 'Appliances', 'Solar & Inverters', 'Industrial']}/>
-        <FooterCol title="Company" items={['Services', 'About', 'Our Work', 'Get in Touch']}/>
+        <FooterCol title="Company" items={[
+          {label: 'Services', href: 'Rodtech Services.html'},
+          {label: 'About', href: 'Rodtech About.html'},
+          {label: 'Our Work', href: 'Rodtech Our Work.html'},
+          {label: 'Get in Touch', href: 'Rodtech Contact.html'},
+        ]}/>
         <FooterCol title="Contact" items={['0793 562 956', 'WhatsApp', 'hello@rodtech.co.ke', 'Bandaptai, Eldoret', 'Open 24 / 7']}/>
       </div>
       <div style={{
         marginTop: 50, paddingTop: 24, borderTop: '1px solid #ebe8e1',
-        display: 'flex', justifyContent: 'space-between',
+        display: 'flex',
+        flexDirection: mobile ? 'column' : 'row',
+        justifyContent: 'space-between',
+        gap: mobile ? 6 : 0,
         fontSize: 12, color: MUTED,
       }}>
         <span>© 2026 Rodtech Ventures Ltd</span>
@@ -313,9 +401,13 @@ function FooterCol({title, items}) {
         {title}
       </div>
       <div style={{display: 'flex', flexDirection: 'column', gap: 10}}>
-        {items.map((it, i) => (
-          <div key={i} style={{fontSize: 14, color: INK}}>{it}</div>
-        ))}
+        {items.map((it, i) => {
+          const label = typeof it === 'string' ? it : it.label;
+          const href = typeof it === 'object' && it.href ? it.href : null;
+          return href
+            ? <a key={i} href={href} style={{fontSize: 14, color: INK, textDecoration: 'none'}}>{label}</a>
+            : <div key={i} style={{fontSize: 14, color: INK}}>{label}</div>;
+        })}
       </div>
     </div>
   );

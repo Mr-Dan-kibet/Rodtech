@@ -18,6 +18,16 @@ const MUTED = '#6e6e84';
 const PAPER = '#ffffff';
 const CREAM = '#f7f5ef';
 
+function useIsMobile(breakpoint = 768) {
+  const [mobile, setMobile] = React.useState(window.innerWidth < breakpoint);
+  React.useEffect(() => {
+    const handler = () => setMobile(window.innerWidth < breakpoint);
+    window.addEventListener('resize', handler);
+    return () => window.removeEventListener('resize', handler);
+  }, [breakpoint]);
+  return mobile;
+}
+
 function RodtechServices() {
   return (
     <div style={{
@@ -157,6 +167,9 @@ function RodtechServices() {
 // ──────────────────────────────────────────────────────────────────────────────
 
 function ServicesNav() {
+  const mobile = useIsMobile();
+  const [open, setOpen] = React.useState(false);
+
   return (
     <div style={{
       position: 'sticky', top: 0, zIndex: 50,
@@ -164,37 +177,89 @@ function ServicesNav() {
       WebkitBackdropFilter: 'blur(20px) saturate(160%)',
       backdropFilter: 'blur(20px) saturate(160%)',
       borderBottom: '1px solid rgba(235,232,225,0.6)',
-      display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-      padding: '20px 64px',
     }}>
-      <a href="Rodtech Home.html" style={{
-        textDecoration: 'none', color: INK,
-        fontSize: 26, fontWeight: 700, letterSpacing: '-0.02em',
-      }}>
-        rod<span style={{color: ACCENT}}>tech</span>
-      </a>
       <div style={{
-        display: 'flex', gap: 48, alignItems: 'center',
-        fontSize: 15, fontWeight: 500, color: INK,
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        padding: mobile ? '16px 20px' : '20px 64px',
       }}>
-        <span style={{color: ACCENT, fontWeight: 600}}>Services</span>
-        <a href="Rodtech About.html" style={{color: INK, textDecoration: 'none'}}>About</a>
-        <a href="Rodtech Our Work.html" style={{color: INK, textDecoration: 'none'}}>Our Work</a>
-        <span>Get in Touch</span>
-        <span style={{
-          padding: '10px 18px', borderRadius: 999, background: INK, color: '#fff',
-          fontSize: 14, fontWeight: 600,
+        <a href="Rodtech Home.html" style={{
+          textDecoration: 'none', color: INK,
+          fontSize: 26, fontWeight: 700, letterSpacing: '-0.02em',
         }}>
-          Call 0793 562 956
-        </span>
+          rod<span style={{color: ACCENT}}>tech</span>
+        </a>
+
+        {mobile ? (
+          <button
+            onClick={() => setOpen(o => !o)}
+            style={{
+              background: 'none', border: 'none', cursor: 'pointer',
+              padding: '4px 6px', display: 'flex', flexDirection: 'column',
+              gap: 5,
+            }}
+            aria-label="Toggle menu"
+          >
+            <span style={{display: 'block', width: 22, height: 2, background: INK, borderRadius: 2}}/>
+            <span style={{display: 'block', width: 22, height: 2, background: INK, borderRadius: 2}}/>
+            <span style={{display: 'block', width: 22, height: 2, background: INK, borderRadius: 2}}/>
+          </button>
+        ) : (
+          <div style={{
+            display: 'flex', gap: 48, alignItems: 'center',
+            fontSize: 15, fontWeight: 500, color: INK,
+          }}>
+            <span style={{color: ACCENT, fontWeight: 600}}>Services</span>
+            <a href="Rodtech About.html" style={{color: INK, textDecoration: 'none'}}>About</a>
+            <a href="Rodtech Our Work.html" style={{color: INK, textDecoration: 'none'}}>Our Work</a>
+            <a href="Rodtech Contact.html" style={{
+              padding: '10px 18px', borderRadius: 999, background: INK, color: '#fff',
+              fontSize: 14, fontWeight: 600, textDecoration: 'none',
+            }}>Contact us</a>
+          </div>
+        )}
       </div>
+
+      {mobile && open && (
+        <div style={{
+          borderTop: '1px solid rgba(235,232,225,0.6)',
+          padding: '12px 20px 20px',
+          display: 'flex', flexDirection: 'column',
+        }}>
+          {[
+            ['Services', 'Rodtech Services.html'],
+            ['About', 'Rodtech About.html'],
+            ['Our Work', 'Rodtech Our Work.html'],
+            ['Contact', 'Rodtech Contact.html'],
+          ].map(([label, href]) => (
+            <a key={label} href={href} style={{
+              color: INK, textDecoration: 'none',
+              fontSize: 16, fontWeight: 500,
+              padding: '12px 0',
+              borderBottom: '1px solid rgba(235,232,225,0.6)',
+            }}>
+              {label}
+            </a>
+          ))}
+          <div style={{marginTop: 16}}>
+            <a href="tel:0793562956" style={{
+              display: 'block', textAlign: 'center',
+              padding: '14px 20px', borderRadius: 999,
+              background: INK, color: '#fff',
+              fontSize: 15, fontWeight: 600, textDecoration: 'none',
+            }}>
+              Call 0793 562 956
+            </a>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
 
 function PageHeader() {
+  const mobile = useIsMobile();
   return (
-    <div style={{padding: '60px 64px 60px'}}>
+    <div style={{padding: mobile ? '40px 20px' : '60px 64px 60px'}}>
       <div style={{
         fontFamily: '"IBM Plex Mono", monospace',
         fontSize: 11, letterSpacing: '0.18em', textTransform: 'uppercase',
@@ -205,19 +270,21 @@ function PageHeader() {
         <span style={{color: INK}}>Services</span>
       </div>
       <div style={{
-        display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: 80,
+        display: 'grid',
+        gridTemplateColumns: mobile ? '1fr' : '1.4fr 1fr',
+        gap: mobile ? 24 : 80,
         alignItems: 'end',
       }}>
         <h1 style={{
           margin: 0,
-          fontSize: 88, lineHeight: 0.98, fontWeight: 700,
+          fontSize: mobile ? 52 : 88, lineHeight: 0.98, fontWeight: 700,
           letterSpacing: '-0.04em',
         }}>
           Everything we<br/>
           <span style={{color: ACCENT}}>repair</span>.
         </h1>
         <div style={{
-          fontSize: 17, lineHeight: 1.55, color: '#3a3a4a', maxWidth: 420,
+          fontSize: mobile ? 15 : 17, lineHeight: 1.55, color: '#3a3a4a', maxWidth: 420,
         }}>
           Three practices, around fifteen services. Most jobs are
           done on the spot — same day for almost everything inside
@@ -230,9 +297,10 @@ function PageHeader() {
 }
 
 function JumpBar() {
+  const mobile = useIsMobile();
   return (
     <div style={{
-      margin: '0 64px',
+      margin: mobile ? '0 20px' : '0 64px',
       borderTop: '1px solid #ebe8e1', borderBottom: '1px solid #ebe8e1',
       padding: '20px 0', display: 'flex', gap: 12, flexWrap: 'wrap',
     }}>
@@ -264,13 +332,17 @@ function JumpPill({label, count, active}) {
 }
 
 function ServiceSection({id, eyebrow, title, body, items}) {
+  const mobile = useIsMobile();
   return (
-    <div id={id} style={{padding: '100px 64px 0', scrollMarginTop: 32}}>
+    <div id={id} style={{padding: mobile ? '60px 20px 0' : '100px 64px 0', scrollMarginTop: 32}}>
       {/* Section banner */}
       <div style={{
         background: ACCENT, color: '#fff',
-        padding: '40px 44px', borderRadius: 22,
-        display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 60, alignItems: 'end',
+        padding: mobile ? '32px 28px' : '40px 44px', borderRadius: 22,
+        display: 'grid',
+        gridTemplateColumns: mobile ? '1fr' : '1fr 1fr',
+        gap: mobile ? 16 : 60,
+        alignItems: 'end',
       }}>
         <div>
           <div style={{
@@ -282,7 +354,7 @@ function ServiceSection({id, eyebrow, title, body, items}) {
           </div>
           <h2 style={{
             margin: 0,
-            fontSize: 48, fontWeight: 700, lineHeight: 1.05,
+            fontSize: mobile ? 32 : 48, fontWeight: 700, lineHeight: 1.05,
             letterSpacing: '-0.03em',
           }}>
             {title}
@@ -299,7 +371,9 @@ function ServiceSection({id, eyebrow, title, body, items}) {
       {/* Service cards grid */}
       <div style={{
         marginTop: 24,
-        display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 18,
+        display: 'grid',
+        gridTemplateColumns: mobile ? '1fr' : 'repeat(2, 1fr)',
+        gap: 18,
       }}>
         {items.map((s, i) => <ServiceCard key={i} {...s}/>)}
       </div>
@@ -362,12 +436,15 @@ function ServiceCard({name, desc, fixes, response}) {
 }
 
 function IndustrialCallout() {
+  const mobile = useIsMobile();
   return (
-    <div id="industrial" style={{padding: '100px 64px 0', scrollMarginTop: 32}}>
+    <div id="industrial" style={{padding: mobile ? '60px 20px 0' : '100px 64px 0', scrollMarginTop: 32}}>
       <div style={{
         background: INK, color: '#f5f3ec',
-        borderRadius: 28, padding: '64px 56px',
-        display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: 80,
+        borderRadius: 28, padding: mobile ? '40px 28px' : '64px 56px',
+        display: 'grid',
+        gridTemplateColumns: mobile ? '1fr' : '1.2fr 1fr',
+        gap: mobile ? 32 : 80,
         alignItems: 'center', position: 'relative', overflow: 'hidden',
       }}>
         <div style={{
@@ -384,7 +461,7 @@ function IndustrialCallout() {
             04 — Industrial & Commercial
           </div>
           <h2 style={{
-            margin: 0, fontSize: 44, fontWeight: 700, lineHeight: 1.05,
+            margin: 0, fontSize: mobile ? 32 : 44, fontWeight: 700, lineHeight: 1.05,
             letterSpacing: '-0.03em',
           }}>
             We work with kitchens,<br/>
@@ -392,7 +469,7 @@ function IndustrialCallout() {
             and hotels.
           </h2>
           <p style={{
-            marginTop: 22, marginBottom: 0, fontSize: 16, lineHeight: 1.55,
+            marginTop: 22, marginBottom: 0, fontSize: mobile ? 15 : 16, lineHeight: 1.55,
             opacity: 0.75, maxWidth: 480,
           }}>
             Larger-scale commercial work is quoted job-by-job —
@@ -412,7 +489,9 @@ function IndustrialCallout() {
               padding: '18px 22px', borderRadius: 14,
               background: 'rgba(255,255,255,0.06)',
               border: '1px solid rgba(255,255,255,0.1)',
-              display: 'grid', gridTemplateColumns: '120px 1fr', gap: 18,
+              display: 'grid',
+              gridTemplateColumns: mobile ? '90px 1fr' : '120px 1fr',
+              gap: 18,
               alignItems: 'center',
             }}>
               <div style={{fontSize: 16, fontWeight: 700}}>{k}</div>
@@ -426,10 +505,13 @@ function IndustrialCallout() {
 }
 
 function ServicesCTA() {
+  const mobile = useIsMobile();
   return (
-    <div style={{padding: '100px 64px'}}>
+    <div style={{padding: mobile ? '60px 20px' : '100px 64px'}}>
       <div style={{
-        display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 60,
+        display: 'grid',
+        gridTemplateColumns: mobile ? '1fr' : '1fr 1fr',
+        gap: mobile ? 32 : 60,
         alignItems: 'center',
       }}>
         <div>
@@ -447,14 +529,14 @@ function ServicesCTA() {
           </div>
           <h3 style={{
             margin: 0,
-            fontSize: 54, fontWeight: 700, lineHeight: 1.0,
+            fontSize: mobile ? 36 : 54, fontWeight: 700, lineHeight: 1.0,
             letterSpacing: '-0.03em',
           }}>
             Don't see your<br/>
             appliance?
           </h3>
           <p style={{
-            marginTop: 22, marginBottom: 0, fontSize: 16, lineHeight: 1.55,
+            marginTop: 22, marginBottom: 0, fontSize: mobile ? 15 : 16, lineHeight: 1.55,
             color: MUTED, maxWidth: 460,
           }}>
             The list above is what we get called for most. If
@@ -473,7 +555,7 @@ function ServicesCTA() {
           }}>
             <div>
               <div style={{fontSize: 12, opacity: 0.85, letterSpacing: '0.06em', textTransform: 'uppercase'}}>Call</div>
-              <div style={{fontSize: 26, fontWeight: 700, marginTop: 4, letterSpacing: '-0.02em'}}>0793 562 956</div>
+              <div style={{fontSize: mobile ? 22 : 26, fontWeight: 700, marginTop: 4, letterSpacing: '-0.02em'}}>0793 562 956</div>
             </div>
             <span style={{fontSize: 22}}>→</span>
           </div>
@@ -496,12 +578,14 @@ function ServicesCTA() {
 }
 
 function SiteFooter() {
+  const mobile = useIsMobile();
   return (
-    <div style={{padding: '0 64px 60px'}}>
+    <div style={{padding: mobile ? '0 20px 40px' : '0 64px 60px'}}>
       <div style={{
         borderTop: '1px solid #ebe8e1', paddingTop: 50,
-        display: 'grid', gridTemplateColumns: '1.4fr 1fr 1fr 1fr',
-        gap: 40,
+        display: 'grid',
+        gridTemplateColumns: mobile ? '1fr' : '1.4fr 1fr 1fr 1fr',
+        gap: mobile ? 32 : 40,
       }}>
         <div>
           <div style={{fontSize: 26, fontWeight: 700, letterSpacing: '-0.02em'}}>
@@ -513,12 +597,20 @@ function SiteFooter() {
           </div>
         </div>
         <FooterCol title="Services" items={['Refrigeration', 'Electrical', 'Appliances', 'Solar & Inverters', 'Industrial']}/>
-        <FooterCol title="Company" items={['Services', 'About', 'Our Work', 'Get in Touch']}/>
+        <FooterCol title="Company" items={[
+          {label: 'Services', href: 'Rodtech Services.html'},
+          {label: 'About', href: 'Rodtech About.html'},
+          {label: 'Our Work', href: 'Rodtech Our Work.html'},
+          {label: 'Get in Touch', href: 'Rodtech Contact.html'},
+        ]}/>
         <FooterCol title="Contact" items={['0793 562 956', 'WhatsApp', 'hello@rodtech.co.ke', 'Bandaptai, Eldoret', 'Open 24 / 7']}/>
       </div>
       <div style={{
         marginTop: 50, paddingTop: 24, borderTop: '1px solid #ebe8e1',
-        display: 'flex', justifyContent: 'space-between',
+        display: 'flex',
+        flexDirection: mobile ? 'column' : 'row',
+        justifyContent: 'space-between',
+        gap: mobile ? 6 : 0,
         fontSize: 12, color: MUTED,
       }}>
         <span>© 2026 Rodtech Ventures Ltd</span>
@@ -539,9 +631,13 @@ function FooterCol({title, items}) {
         {title}
       </div>
       <div style={{display: 'flex', flexDirection: 'column', gap: 10}}>
-        {items.map((it, i) => (
-          <div key={i} style={{fontSize: 14, color: INK}}>{it}</div>
-        ))}
+        {items.map((it, i) => {
+          const label = typeof it === 'string' ? it : it.label;
+          const href = typeof it === 'object' && it.href ? it.href : null;
+          return href
+            ? <a key={i} href={href} style={{fontSize: 14, color: INK, textDecoration: 'none'}}>{label}</a>
+            : <div key={i} style={{fontSize: 14, color: INK}}>{label}</div>;
+        })}
       </div>
     </div>
   );

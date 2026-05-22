@@ -32,6 +32,16 @@ function softFor(hex) {
   return hex + '14';
 }
 
+function useIsMobile(breakpoint = 768) {
+  const [mobile, setMobile] = React.useState(window.innerWidth < breakpoint);
+  React.useEffect(() => {
+    const handler = () => setMobile(window.innerWidth < breakpoint);
+    window.addEventListener('resize', handler);
+    return () => window.removeEventListener('resize', handler);
+  }, [breakpoint]);
+  return mobile;
+}
+
 function RodtechAbout() {
   const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
   const accent = t.accent;
@@ -87,6 +97,9 @@ function RodtechAbout() {
 // ──────────────────────────────────────────────────────────────────────────────
 
 function AboutNav({accent, phone}) {
+  const mobile = useIsMobile();
+  const [open, setOpen] = React.useState(false);
+
   return (
     <div style={{
       position: 'sticky', top: 0, zIndex: 50,
@@ -94,42 +107,94 @@ function AboutNav({accent, phone}) {
       WebkitBackdropFilter: 'blur(20px) saturate(160%)',
       backdropFilter: 'blur(20px) saturate(160%)',
       borderBottom: '1px solid rgba(235,232,225,0.6)',
-      display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-      padding: '20px 64px',
     }}>
-      <a href="Rodtech Home.html" style={{
-        textDecoration: 'none', color: INK,
-        fontSize: 26, fontWeight: 700, letterSpacing: '-0.02em',
-      }}>
-        rod<span style={{color: accent}}>tech</span>
-      </a>
       <div style={{
-        display: 'flex', gap: 48, alignItems: 'center',
-        fontSize: 15, fontWeight: 500, color: INK,
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        padding: mobile ? '16px 20px' : '20px 64px',
       }}>
-        <a href="Rodtech Services.html" style={{color: INK, textDecoration: 'none'}}>Services</a>
-        <span style={{color: accent, fontWeight: 600}}>About</span>
-        <a href="Rodtech Our Work.html" style={{color: INK, textDecoration: 'none'}}>Our Work</a>
-        <span>Get in Touch</span>
-        <span style={{
-          padding: '10px 18px', borderRadius: 999, background: INK, color: '#fff',
-          fontSize: 14, fontWeight: 600,
+        <a href="Rodtech Home.html" style={{
+          textDecoration: 'none', color: INK,
+          fontSize: 26, fontWeight: 700, letterSpacing: '-0.02em',
         }}>
-          Call {phone}
-        </span>
+          rod<span style={{color: accent}}>tech</span>
+        </a>
+
+        {mobile ? (
+          <button
+            onClick={() => setOpen(o => !o)}
+            style={{
+              background: 'none', border: 'none', cursor: 'pointer',
+              padding: '4px 6px', display: 'flex', flexDirection: 'column',
+              gap: 5,
+            }}
+            aria-label="Toggle menu"
+          >
+            <span style={{display: 'block', width: 22, height: 2, background: INK, borderRadius: 2}}/>
+            <span style={{display: 'block', width: 22, height: 2, background: INK, borderRadius: 2}}/>
+            <span style={{display: 'block', width: 22, height: 2, background: INK, borderRadius: 2}}/>
+          </button>
+        ) : (
+          <div style={{
+            display: 'flex', gap: 48, alignItems: 'center',
+            fontSize: 15, fontWeight: 500, color: INK,
+          }}>
+            <a href="Rodtech Services.html" style={{color: INK, textDecoration: 'none'}}>Services</a>
+            <span style={{color: accent, fontWeight: 600}}>About</span>
+            <a href="Rodtech Our Work.html" style={{color: INK, textDecoration: 'none'}}>Our Work</a>
+            <a href="Rodtech Contact.html" style={{
+              padding: '10px 18px', borderRadius: 999, background: INK, color: '#fff',
+              fontSize: 14, fontWeight: 600, textDecoration: 'none',
+            }}>Contact us</a>
+          </div>
+        )}
       </div>
+
+      {mobile && open && (
+        <div style={{
+          borderTop: '1px solid rgba(235,232,225,0.6)',
+          padding: '12px 20px 20px',
+          display: 'flex', flexDirection: 'column',
+        }}>
+          {[
+            ['Services', 'Rodtech Services.html'],
+            ['About', 'Rodtech About.html'],
+            ['Our Work', 'Rodtech Our Work.html'],
+            ['Contact', 'Rodtech Contact.html'],
+          ].map(([label, href]) => (
+            <a key={label} href={href} style={{
+              color: INK, textDecoration: 'none',
+              fontSize: 16, fontWeight: 500,
+              padding: '12px 0',
+              borderBottom: '1px solid rgba(235,232,225,0.6)',
+            }}>
+              {label}
+            </a>
+          ))}
+          <div style={{marginTop: 16}}>
+            <a href={`tel:${phone.replace(/\s/g, '')}`} style={{
+              display: 'block', textAlign: 'center',
+              padding: '14px 20px', borderRadius: 999,
+              background: INK, color: '#fff',
+              fontSize: 15, fontWeight: 600, textDecoration: 'none',
+            }}>
+              Call {phone}
+            </a>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
 
 function AboutHero({accent, ownerName, ownerRole, foundedYear, teamSize}) {
+  const mobile = useIsMobile();
   // Split name on first space so the surname gets the accent color
   const [firstName, ...rest] = (ownerName || '').split(' ');
   const lastName = rest.join(' ');
   const otherTechs = Math.max(0, (parseInt(teamSize, 10) || 1) - 1);
 
   return (
-    <div style={{padding: '60px 64px 100px'}}>
+    <div style={{padding: mobile ? '40px 20px 60px' : '60px 64px 100px'}}>
       <div style={{
         fontFamily: '"IBM Plex Mono", monospace',
         fontSize: 11, letterSpacing: '0.18em', textTransform: 'uppercase',
@@ -141,11 +206,13 @@ function AboutHero({accent, ownerName, ownerRole, foundedYear, teamSize}) {
       </div>
 
       <div style={{
-        display: 'grid', gridTemplateColumns: '0.85fr 1.15fr', gap: 80,
+        display: 'grid',
+        gridTemplateColumns: mobile ? '1fr' : '0.85fr 1.15fr',
+        gap: mobile ? 32 : 80,
         alignItems: 'end',
       }}>
         {/* Portrait — placeholder, notched corner top-right matches home hero */}
-        <div style={{position: 'relative', height: 560}}>
+        <div style={{position: 'relative', height: mobile ? 300 : 560}}>
           <div style={{
             position: 'absolute', inset: 0,
             borderRadius: 24, overflow: 'hidden',
@@ -182,7 +249,7 @@ function AboutHero({accent, ownerName, ownerRole, foundedYear, teamSize}) {
             }}>
               Est.
             </div>
-            <div style={{fontSize: 34, fontWeight: 700, letterSpacing: '-0.02em'}}>
+            <div style={{fontSize: mobile ? 22 : 34, fontWeight: 700, letterSpacing: '-0.02em'}}>
               {foundedYear}
             </div>
           </div>
@@ -199,15 +266,15 @@ function AboutHero({accent, ownerName, ownerRole, foundedYear, teamSize}) {
           </div>
           <h1 style={{
             margin: 0,
-            fontSize: 88, lineHeight: 0.98, fontWeight: 700,
+            fontSize: mobile ? 52 : 88, lineHeight: 0.98, fontWeight: 700,
             letterSpacing: '-0.04em',
           }}>
             {firstName}{lastName ? <br/> : null}
             {lastName && <span style={{color: accent}}>{lastName}</span>}.
           </h1>
           <p style={{
-            marginTop: 36, marginBottom: 0,
-            fontSize: 20, lineHeight: 1.45, color: '#3a3a4a',
+            marginTop: mobile ? 24 : 36, marginBottom: 0,
+            fontSize: mobile ? 16 : 20, lineHeight: 1.45, color: '#3a3a4a',
             maxWidth: 520, fontWeight: 500,
           }}>
             {firstName} runs Rodtech out of a workshop in Bandaptai with
@@ -228,11 +295,14 @@ function numberWord(n) {
 }
 
 function StorySection({accent}) {
+  const mobile = useIsMobile();
   return (
-    <div style={{padding: '60px 64px 0', background: CREAM, marginTop: 40}}>
-      <div style={{padding: '90px 0'}}>
+    <div style={{padding: mobile ? '40px 20px 0' : '60px 64px 0', background: CREAM, marginTop: 40}}>
+      <div style={{padding: mobile ? '50px 0' : '90px 0'}}>
         <div style={{
-          display: 'grid', gridTemplateColumns: '0.4fr 1fr', gap: 80,
+          display: 'grid',
+          gridTemplateColumns: mobile ? '1fr' : '0.4fr 1fr',
+          gap: mobile ? 20 : 80,
           alignItems: 'start',
         }}>
           <div style={{
@@ -245,15 +315,16 @@ function StorySection({accent}) {
           <div>
             <h2 style={{
               margin: 0,
-              fontSize: 44, fontWeight: 700, lineHeight: 1.15,
+              fontSize: mobile ? 28 : 44, fontWeight: 700, lineHeight: 1.15,
               letterSpacing: '-0.025em',
             }}>
-              We started Rodtech because too many<br/>
+              We started Rodtech because too many
               good appliances were getting <span style={{color: accent}}>thrown out</span>.
             </h2>
             <div style={{
               marginTop: 36, display: 'grid',
-              gridTemplateColumns: '1fr 1fr', gap: 40,
+              gridTemplateColumns: mobile ? '1fr' : '1fr 1fr',
+              gap: mobile ? 20 : 40,
               fontSize: 16, lineHeight: 1.65, color: '#3a3a4a',
             }}>
               <p style={{margin: 0}}>
@@ -279,6 +350,7 @@ function StorySection({accent}) {
 }
 
 function TeamSection({accent, ownerName}) {
+  const mobile = useIsMobile();
   const initials = (ownerName || 'D B').split(' ').map(s => s[0]).join('').slice(0, 2).toUpperCase();
   const team = [
     {name: ownerName, role: 'Founder & Lead', spec: 'All practices · Refrigeration, Electrical', tag: initials},
@@ -286,14 +358,18 @@ function TeamSection({accent, ownerName}) {
     {name: 'Lead Technician 03', role: 'Electrical & Power', spec: 'Wiring, generators, solar', tag: 'L3'},
   ];
   return (
-    <div style={{padding: '120px 64px 0'}}>
+    <div style={{padding: mobile ? '60px 20px 0' : '120px 64px 0'}}>
       <div style={{
-        display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between',
-        marginBottom: 48, gap: 40,
+        display: 'flex',
+        flexDirection: mobile ? 'column' : 'row',
+        alignItems: mobile ? 'flex-start' : 'flex-end',
+        justifyContent: 'space-between',
+        marginBottom: mobile ? 32 : 48,
+        gap: mobile ? 12 : 40,
       }}>
         <h2 style={{
           margin: 0,
-          fontSize: 64, fontWeight: 700, letterSpacing: '-0.035em',
+          fontSize: mobile ? 36 : 64, fontWeight: 700, letterSpacing: '-0.035em',
           lineHeight: 1, maxWidth: 700,
         }}>
           The <span style={{color: accent}}>leads</span>.
@@ -307,15 +383,25 @@ function TeamSection({accent, ownerName}) {
         </p>
       </div>
       <div style={{
-        display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 18,
+        display: 'grid',
+        gridTemplateColumns: mobile ? '1fr' : 'repeat(3, 1fr)',
+        gap: mobile ? 28 : 18,
       }}>
         {team.map((m, i) => (
           <div key={i} style={{
-            display: 'flex', flexDirection: 'column', gap: 16,
+            display: mobile ? 'flex' : 'flex',
+            flexDirection: mobile ? 'row' : 'column',
+            gap: mobile ? 20 : 16,
+            alignItems: mobile ? 'center' : 'stretch',
           }}>
             {/* Photo placeholder */}
             <div style={{
-              aspectRatio: '4/5', borderRadius: 16, overflow: 'hidden',
+              flexShrink: 0,
+              width: mobile ? 80 : 'auto',
+              height: mobile ? 80 : 'auto',
+              aspectRatio: mobile ? '1' : '4/5',
+              borderRadius: mobile ? '50%' : 16,
+              overflow: 'hidden',
               background: i === 0
                 ? `linear-gradient(165deg, ${accent} 0%, ${accent}cc 100%)`
                 : 'linear-gradient(165deg, #1a1a2e 0%, #2a2a40 100%)',
@@ -325,15 +411,17 @@ function TeamSection({accent, ownerName}) {
                 position: 'absolute', inset: 0,
                 background: `radial-gradient(60% 50% at 50% 65%, rgba(255,255,255,0.08) 0%, transparent 60%)`,
               }}/>
-              <div style={{
-                position: 'absolute', top: 12, left: 12,
-                fontFamily: '"IBM Plex Mono", monospace',
-                fontSize: 10, letterSpacing: '0.14em',
-                color: 'rgba(255,255,255,0.7)',
-              }}>
-                #{m.tag}
-              </div>
-              {i !== 0 && (
+              {!mobile && (
+                <div style={{
+                  position: 'absolute', top: 12, left: 12,
+                  fontFamily: '"IBM Plex Mono", monospace',
+                  fontSize: 10, letterSpacing: '0.14em',
+                  color: 'rgba(255,255,255,0.7)',
+                }}>
+                  #{m.tag}
+                </div>
+              )}
+              {!mobile && i !== 0 && (
                 <div style={{
                   position: 'absolute', bottom: 14, left: 14,
                   fontFamily: '"IBM Plex Mono", monospace',
@@ -369,6 +457,7 @@ function TeamSection({accent, ownerName}) {
 }
 
 function HowWeWork({accent}) {
+  const mobile = useIsMobile();
   const principles = [
     {
       n: '01',
@@ -392,16 +481,18 @@ function HowWeWork({accent}) {
     },
   ];
   return (
-    <div style={{padding: '120px 64px 0'}}>
+    <div style={{padding: mobile ? '60px 20px 0' : '120px 64px 0'}}>
       <h2 style={{
-        margin: 0, marginBottom: 48,
-        fontSize: 64, fontWeight: 700, letterSpacing: '-0.035em',
+        margin: 0, marginBottom: mobile ? 32 : 48,
+        fontSize: mobile ? 36 : 64, fontWeight: 700, letterSpacing: '-0.035em',
         lineHeight: 1,
       }}>
         How we <span style={{color: accent}}>work</span>.
       </h2>
       <div style={{
-        display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 18,
+        display: 'grid',
+        gridTemplateColumns: mobile ? '1fr' : 'repeat(2, 1fr)',
+        gap: 18,
       }}>
         {principles.map((p, i) => (
           <div key={i} style={{
@@ -418,7 +509,7 @@ function HowWeWork({accent}) {
             </div>
             <div>
               <div style={{
-                fontSize: 24, fontWeight: 700, letterSpacing: '-0.02em',
+                fontSize: mobile ? 20 : 24, fontWeight: 700, letterSpacing: '-0.02em',
                 lineHeight: 1.2,
               }}>
                 {p.title}
@@ -440,9 +531,7 @@ function HowWeWork({accent}) {
 // ────────────────────────────────────────────────────────────────────────────
 
 function TestimonialsSection({accent}) {
-  // Two short testimonials picking different brand promises.
-  // DRAFT — quotes are paraphrased composites of the kind of thing Rodtech's
-  // Google reviews describe. Replace with real verbatim once you have permission.
+  const mobile = useIsMobile();
   const items = [
     {
       quote: "Told me my fridge wasn't worth fixing and saved me KSh 30,000 on a replacement I didn't need. Came back three weeks later for the new one.",
@@ -458,14 +547,18 @@ function TestimonialsSection({accent}) {
     },
   ];
   return (
-    <div style={{padding: '120px 64px 0'}}>
+    <div style={{padding: mobile ? '60px 20px 0' : '120px 64px 0'}}>
       <div style={{
-        display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between',
-        marginBottom: 40, gap: 40,
+        display: 'flex',
+        flexDirection: mobile ? 'column' : 'row',
+        alignItems: mobile ? 'flex-start' : 'flex-end',
+        justifyContent: 'space-between',
+        marginBottom: mobile ? 24 : 40,
+        gap: mobile ? 8 : 40,
       }}>
         <h2 style={{
           margin: 0,
-          fontSize: 64, fontWeight: 700, letterSpacing: '-0.035em',
+          fontSize: mobile ? 36 : 64, fontWeight: 700, letterSpacing: '-0.035em',
           lineHeight: 1, maxWidth: 700,
         }}>
           What clients <span style={{color: accent}}>say</span>.
@@ -479,7 +572,9 @@ function TestimonialsSection({accent}) {
         </div>
       </div>
       <div style={{
-        display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 18,
+        display: 'grid',
+        gridTemplateColumns: mobile ? '1fr' : 'repeat(2, 1fr)',
+        gap: 18,
       }}>
         {items.map((it, i) => (
           <div key={i} style={{
@@ -494,10 +589,10 @@ function TestimonialsSection({accent}) {
               ★★★★★ · {it.proves}
             </div>
             <div style={{
-              fontSize: 20, lineHeight: 1.4, letterSpacing: '-0.01em',
+              fontSize: mobile ? 17 : 20, lineHeight: 1.4, letterSpacing: '-0.01em',
               fontWeight: 500, color: INK, flexGrow: 1,
             }}>
-              “{it.quote}”
+              "{it.quote}"
             </div>
             <div style={{
               fontSize: 13, color: MUTED,
@@ -540,16 +635,18 @@ function AboutGoogleG() {
 }
 
 function ServiceArea({accent}) {
+  const mobile = useIsMobile();
   const towns = [
     'Eldoret', 'Bandaptai', 'Kapsabet', 'Kitale', 'Iten', 'Mosoriot',
     'Burnt Forest', 'Ziwa', 'Nandi Hills', 'Moi\'s Bridge', 'Webuye',
     'Kabarnet', 'Kakamega', 'Bungoma', 'Eldama Ravine',
   ];
   return (
-    <div style={{padding: '120px 64px 0'}}>
+    <div style={{padding: mobile ? '60px 20px 0' : '120px 64px 0'}}>
       <div style={{
         background: INK, color: '#f5f3ec', borderRadius: 28,
-        padding: '64px 56px', position: 'relative', overflow: 'hidden',
+        padding: mobile ? '40px 28px' : '64px 56px',
+        position: 'relative', overflow: 'hidden',
       }}>
         <div style={{
           position: 'absolute', top: -120, right: -100,
@@ -558,7 +655,9 @@ function ServiceArea({accent}) {
         }}/>
         <div style={{
           position: 'relative',
-          display: 'grid', gridTemplateColumns: '1fr 1.2fr', gap: 80,
+          display: 'grid',
+          gridTemplateColumns: mobile ? '1fr' : '1fr 1.2fr',
+          gap: mobile ? 32 : 80,
           alignItems: 'center',
         }}>
           <div>
@@ -571,7 +670,7 @@ function ServiceArea({accent}) {
             </div>
             <h2 style={{
               margin: 0,
-              fontSize: 52, fontWeight: 700, lineHeight: 1.0,
+              fontSize: mobile ? 32 : 52, fontWeight: 700, lineHeight: 1.0,
               letterSpacing: '-0.03em',
             }}>
               Anywhere in the<br/>
@@ -579,7 +678,7 @@ function ServiceArea({accent}) {
               we can reach in a day.
             </h2>
             <p style={{
-              marginTop: 22, marginBottom: 0, fontSize: 16, lineHeight: 1.55,
+              marginTop: 22, marginBottom: 0, fontSize: mobile ? 15 : 16, lineHeight: 1.55,
               opacity: 0.75, maxWidth: 460,
             }}>
               Eldoret is our base. If you can get to us by road, we
@@ -610,6 +709,8 @@ function ServiceArea({accent}) {
 }
 
 function ByTheNumbers({accent, foundedYear, teamSize}) {
+  const mobile = useIsMobile();
+  const cols = mobile ? 2 : 3;
   const stats = [
     [foundedYear, 'Year founded'],
     [teamSize, 'Lead technicians'],
@@ -619,14 +720,18 @@ function ByTheNumbers({accent, foundedYear, teamSize}) {
     ['30 days', 'Guarantee on parts'],
   ];
   return (
-    <div style={{padding: '120px 64px 0'}}>
+    <div style={{padding: mobile ? '60px 20px 0' : '120px 64px 0'}}>
       <div style={{
-        display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between',
+        display: 'flex',
+        flexDirection: mobile ? 'column' : 'row',
+        alignItems: mobile ? 'flex-start' : 'flex-end',
+        justifyContent: 'space-between',
         marginBottom: 40,
+        gap: mobile ? 8 : 0,
       }}>
         <h2 style={{
           margin: 0,
-          fontSize: 50, fontWeight: 700, letterSpacing: '-0.03em',
+          fontSize: mobile ? 32 : 50, fontWeight: 700, letterSpacing: '-0.03em',
           lineHeight: 1,
         }}>
           By the <span style={{color: accent}}>numbers</span>.
@@ -640,23 +745,25 @@ function ByTheNumbers({accent, foundedYear, teamSize}) {
         </div>
       </div>
       <div style={{
-        display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 0,
+        display: 'grid',
+        gridTemplateColumns: `repeat(${cols}, 1fr)`,
+        gap: 0,
         border: '1px solid #ebe8e1', borderRadius: 22, overflow: 'hidden',
       }}>
         {stats.map(([big, small], i) => (
           <div key={i} style={{
-            padding: '36px 32px',
-            borderRight: (i % 3 !== 2) ? '1px solid #ebe8e1' : 'none',
-            borderBottom: i < 3 ? '1px solid #ebe8e1' : 'none',
+            padding: mobile ? '28px 20px' : '36px 32px',
+            borderRight: (i % cols !== cols - 1) ? '1px solid #ebe8e1' : 'none',
+            borderBottom: i < stats.length - cols ? '1px solid #ebe8e1' : 'none',
           }}>
             <div style={{
-              fontSize: 56, fontWeight: 700, letterSpacing: '-0.035em',
+              fontSize: mobile ? 36 : 56, fontWeight: 700, letterSpacing: '-0.035em',
               lineHeight: 1, color: INK,
             }}>
               {big}
             </div>
             <div style={{
-              fontSize: 14, color: MUTED, marginTop: 10,
+              fontSize: 13, color: MUTED, marginTop: 10,
             }}>
               {small}
             </div>
@@ -668,8 +775,9 @@ function ByTheNumbers({accent, foundedYear, teamSize}) {
 }
 
 function AboutCTA({accent, ctaLabel}) {
+  const mobile = useIsMobile();
   return (
-    <div style={{padding: '120px 64px 100px'}}>
+    <div style={{padding: mobile ? '60px 20px' : '120px 64px 100px'}}>
       <div style={{
         textAlign: 'center', maxWidth: 720, margin: '0 auto',
       }}>
@@ -682,7 +790,7 @@ function AboutCTA({accent, ctaLabel}) {
         </div>
         <h2 style={{
           margin: 0,
-          fontSize: 56, fontWeight: 700, lineHeight: 1.05,
+          fontSize: mobile ? 36 : 56, fontWeight: 700, lineHeight: 1.05,
           letterSpacing: '-0.03em',
         }}>
           Have something that<br/>
@@ -708,12 +816,14 @@ function AboutCTA({accent, ctaLabel}) {
 }
 
 function SiteFooter({accent}) {
+  const mobile = useIsMobile();
   return (
-    <div style={{padding: '0 64px 60px'}}>
+    <div style={{padding: mobile ? '0 20px 40px' : '0 64px 60px'}}>
       <div style={{
         borderTop: '1px solid #ebe8e1', paddingTop: 50,
-        display: 'grid', gridTemplateColumns: '1.4fr 1fr 1fr 1fr',
-        gap: 40,
+        display: 'grid',
+        gridTemplateColumns: mobile ? '1fr' : '1.4fr 1fr 1fr 1fr',
+        gap: mobile ? 32 : 40,
       }}>
         <div>
           <div style={{fontSize: 26, fontWeight: 700, letterSpacing: '-0.02em'}}>
@@ -725,12 +835,20 @@ function SiteFooter({accent}) {
           </div>
         </div>
         <FooterCol title="Services" items={['Refrigeration', 'Electrical', 'Appliances', 'Solar & Inverters', 'Industrial']}/>
-        <FooterCol title="Company" items={['Services', 'About', 'Our Work', 'Get in Touch']}/>
+        <FooterCol title="Company" items={[
+          {label: 'Services', href: 'Rodtech Services.html'},
+          {label: 'About', href: 'Rodtech About.html'},
+          {label: 'Our Work', href: 'Rodtech Our Work.html'},
+          {label: 'Get in Touch', href: 'Rodtech Contact.html'},
+        ]}/>
         <FooterCol title="Contact" items={['0793 562 956', 'WhatsApp', 'hello@rodtech.co.ke', 'Bandaptai, Eldoret', 'Open 24 / 7']}/>
       </div>
       <div style={{
         marginTop: 50, paddingTop: 24, borderTop: '1px solid #ebe8e1',
-        display: 'flex', justifyContent: 'space-between',
+        display: 'flex',
+        flexDirection: mobile ? 'column' : 'row',
+        justifyContent: 'space-between',
+        gap: mobile ? 6 : 0,
         fontSize: 12, color: MUTED,
       }}>
         <span>© 2026 Rodtech Ventures Ltd</span>
@@ -751,9 +869,13 @@ function FooterCol({title, items}) {
         {title}
       </div>
       <div style={{display: 'flex', flexDirection: 'column', gap: 10}}>
-        {items.map((it, i) => (
-          <div key={i} style={{fontSize: 14, color: INK}}>{it}</div>
-        ))}
+        {items.map((it, i) => {
+          const label = typeof it === 'string' ? it : it.label;
+          const href = typeof it === 'object' && it.href ? it.href : null;
+          return href
+            ? <a key={i} href={href} style={{fontSize: 14, color: INK, textDecoration: 'none'}}>{label}</a>
+            : <div key={i} style={{fontSize: 14, color: INK}}>{label}</div>;
+        })}
       </div>
     </div>
   );

@@ -15,6 +15,16 @@ const INK = '#1a1a2e';
 const MUTED = '#6e6e84';
 const PAPER = '#ffffff';
 
+function useIsMobile(breakpoint = 768) {
+  const [mobile, setMobile] = React.useState(window.innerWidth < breakpoint);
+  React.useEffect(() => {
+    const handler = () => setMobile(window.innerWidth < breakpoint);
+    window.addEventListener('resize', handler);
+    return () => window.removeEventListener('resize', handler);
+  }, [breakpoint]);
+  return mobile;
+}
+
 function RodtechHome() {
   return (
     <div style={{
@@ -34,6 +44,9 @@ function RodtechHome() {
 }
 
 function Nav() {
+  const mobile = useIsMobile();
+  const [open, setOpen] = React.useState(false);
+
   return (
     <div style={{
       position: 'sticky', top: 0, zIndex: 50,
@@ -41,43 +54,87 @@ function Nav() {
       WebkitBackdropFilter: 'blur(20px) saturate(160%)',
       backdropFilter: 'blur(20px) saturate(160%)',
       borderBottom: '1px solid rgba(235,232,225,0.6)',
-      display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-      padding: '20px 64px',
     }}>
-      <div style={{fontSize: 26, fontWeight: 700, letterSpacing: '-0.02em'}}>
-        rod<span style={{color: ACCENT}}>tech</span>
-      </div>
       <div style={{
-        display: 'flex', gap: 48, alignItems: 'center',
-        fontSize: 15, fontWeight: 500, color: INK,
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        padding: mobile ? '16px 20px' : '20px 64px',
       }}>
-        <a href="Rodtech Services.html" style={{color: INK, textDecoration: 'none'}}>Services</a>
-        <a href="Rodtech About.html" style={{color: INK, textDecoration: 'none'}}>About</a>
-        <a href="Rodtech Our Work.html" style={{color: INK, textDecoration: 'none'}}>Our Work</a>
-        <span>Get in Touch</span>
-        <span style={{display: 'flex', alignItems: 'center', gap: 6, color: MUTED}}>
-          <span style={{
-            display: 'inline-block', width: 16, height: 11,
-            background: 'linear-gradient(180deg, #000 33%, #fff 33% 66%, #cc0000 66%)',
-            borderRadius: 2,
-          }}/>
-          English ⌄
-        </span>
+        <div style={{fontSize: 26, fontWeight: 700, letterSpacing: '-0.02em'}}>
+          rod<span style={{color: ACCENT}}>tech</span>
+        </div>
+
+        {mobile ? (
+          <button
+            onClick={() => setOpen(o => !o)}
+            style={{
+              background: 'none', border: 'none', cursor: 'pointer',
+              padding: '4px 6px', display: 'flex', flexDirection: 'column',
+              gap: 5,
+            }}
+            aria-label="Toggle menu"
+          >
+            <span style={{display: 'block', width: 22, height: 2, background: INK, borderRadius: 2}}/>
+            <span style={{display: 'block', width: 22, height: 2, background: INK, borderRadius: 2}}/>
+            <span style={{display: 'block', width: 22, height: 2, background: INK, borderRadius: 2}}/>
+          </button>
+        ) : (
+          <div style={{
+            display: 'flex', gap: 48, alignItems: 'center',
+            fontSize: 15, fontWeight: 500, color: INK,
+          }}>
+            <a href="Rodtech Services.html" style={{color: INK, textDecoration: 'none'}}>Services</a>
+            <a href="Rodtech About.html" style={{color: INK, textDecoration: 'none'}}>About</a>
+            <a href="Rodtech Our Work.html" style={{color: INK, textDecoration: 'none'}}>Our Work</a>
+            <a href="Rodtech Contact.html" style={{
+              padding: '10px 18px', borderRadius: 999, background: INK, color: '#fff',
+              fontSize: 14, fontWeight: 600, textDecoration: 'none',
+            }}>Contact us</a>
+          </div>
+        )}
       </div>
+
+      {mobile && open && (
+        <div style={{
+          borderTop: '1px solid rgba(235,232,225,0.6)',
+          padding: '12px 20px 20px',
+          display: 'flex', flexDirection: 'column', gap: 0,
+        }}>
+          {[
+            ['Services', 'Rodtech Services.html'],
+            ['About', 'Rodtech About.html'],
+            ['Our Work', 'Rodtech Our Work.html'],
+            ['Contact', 'Rodtech Contact.html'],
+          ].map(([label, href]) => (
+            <a key={label} href={href} style={{
+              color: INK, textDecoration: 'none',
+              fontSize: 16, fontWeight: 500,
+              padding: '12px 0',
+              borderBottom: '1px solid rgba(235,232,225,0.6)',
+            }}>
+              {label}
+            </a>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
 
 function Hero() {
+  const mobile = useIsMobile();
   return (
     <div style={{
-      display: 'grid', gridTemplateColumns: '1fr 1fr',
-      gap: 60, padding: '100px 64px 100px', alignItems: 'center',
+      display: 'grid',
+      gridTemplateColumns: mobile ? '1fr' : '1fr 1fr',
+      gap: mobile ? 32 : 60,
+      padding: mobile ? '60px 20px' : '100px 64px 100px',
+      alignItems: 'center',
     }}>
       <div>
         <h1 style={{
           margin: 0,
-          fontSize: 92, lineHeight: 0.98, fontWeight: 700,
+          fontSize: mobile ? 48 : 92,
+          lineHeight: 0.98, fontWeight: 700,
           letterSpacing: '-0.04em',
         }}>
           <span style={{color: ACCENT}}>Reviving</span>
@@ -85,8 +142,9 @@ function Hero() {
           Appliances.
         </h1>
         <p style={{
-          marginTop: 44, marginBottom: 0, maxWidth: 480,
-          fontSize: 17, lineHeight: 1.55, color: '#3a3a4a',
+          marginTop: mobile ? 28 : 44, marginBottom: 0,
+          maxWidth: 480,
+          fontSize: mobile ? 15 : 17, lineHeight: 1.55, color: '#3a3a4a',
         }}>
           The 24/7 repair workshop reviving the appliances you'd
           given up on. From a single fridge in a home kitchen to
@@ -95,40 +153,45 @@ function Hero() {
         </p>
         <p style={{
           marginTop: 18, marginBottom: 0, maxWidth: 480,
-          fontSize: 17, lineHeight: 1.55, color: '#3a3a4a',
+          fontSize: mobile ? 15 : 17, lineHeight: 1.55, color: '#3a3a4a',
         }}>
           Based in Bandaptai, Eldoret — covering the North Rift,
           with 4.8★ across 64 verified Google reviews.
         </p>
       </div>
 
-      <div style={{position: 'relative', height: 560, borderRadius: 24, overflow: 'hidden', background: '#0c0a14'}}>
-          <img src="images/board-hand.webp" alt="On-site appliance repair — Bandaptai workshop" style={{
-            width: '100%', height: '100%', objectFit: 'cover',
-            objectPosition: 'center 60%',
-            filter: 'saturate(0.92) contrast(1.05)',
-            display: 'block',
-          }}/>
-          <div style={{
-            position: 'absolute', inset: 0,
-            background: 'linear-gradient(180deg, transparent 55%, rgba(6,20,15,0.65) 100%)',
-            pointerEvents: 'none',
-          }}/>
-          <div style={{
-            position: 'absolute', bottom: 22, left: 28,
-            color: 'rgba(255,255,255,0.9)',
-            fontFamily: '"IBM Plex Mono", monospace',
-            fontSize: 11, letterSpacing: '0.18em', textTransform: 'uppercase',
-            fontWeight: 600,
-          }}>
-            on-site · bandaptai
-          </div>
+      <div style={{
+        position: 'relative',
+        height: mobile ? 280 : 560,
+        borderRadius: 24, overflow: 'hidden', background: '#0c0a14',
+      }}>
+        <img src="images/board-hand.webp" alt="On-site appliance repair — Bandaptai workshop" style={{
+          width: '100%', height: '100%', objectFit: 'cover',
+          objectPosition: 'center 60%',
+          filter: 'saturate(0.92) contrast(1.05)',
+          display: 'block',
+        }}/>
+        <div style={{
+          position: 'absolute', inset: 0,
+          background: 'linear-gradient(180deg, transparent 55%, rgba(6,20,15,0.65) 100%)',
+          pointerEvents: 'none',
+        }}/>
+        <div style={{
+          position: 'absolute', bottom: 22, left: 28,
+          color: 'rgba(255,255,255,0.9)',
+          fontFamily: '"IBM Plex Mono", monospace',
+          fontSize: 11, letterSpacing: '0.18em', textTransform: 'uppercase',
+          fontWeight: 600,
+        }}>
+          on-site · bandaptai
+        </div>
       </div>
     </div>
   );
 }
 
 function TrustStrip() {
+  const mobile = useIsMobile();
   const items = [
     ['4.8★', '64 verified reviews'],
     ['24 / 7', 'always on call'],
@@ -138,16 +201,18 @@ function TrustStrip() {
   return (
     <div style={{
       borderTop: '1px solid #ebe8e1', borderBottom: '1px solid #ebe8e1',
-      padding: '36px 64px',
-      display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 24,
+      padding: mobile ? '28px 20px' : '36px 64px',
+      display: 'grid',
+      gridTemplateColumns: mobile ? 'repeat(2, 1fr)' : 'repeat(4, 1fr)',
+      gap: mobile ? 20 : 24,
     }}>
       {items.map(([big, small], i) => (
         <div key={i} style={{
-          paddingLeft: i ? 32 : 0,
-          borderLeft: i ? '1px solid #ebe8e1' : 'none',
+          paddingLeft: (!mobile && i) ? 32 : 0,
+          borderLeft: (!mobile && i) ? '1px solid #ebe8e1' : 'none',
         }}>
           <div style={{
-            fontSize: 38, fontWeight: 700, letterSpacing: '-0.025em',
+            fontSize: mobile ? 28 : 38, fontWeight: 700, letterSpacing: '-0.025em',
             lineHeight: 1, color: INK,
           }}>
             {big}
@@ -165,6 +230,7 @@ function TrustStrip() {
 }
 
 function AreasOfExpertise() {
+  const mobile = useIsMobile();
   const cards = [
     {
       title: 'Refrigeration',
@@ -186,14 +252,18 @@ function AreasOfExpertise() {
     },
   ];
   return (
-    <div style={{padding: '110px 64px 0'}}>
+    <div style={{padding: mobile ? '60px 20px 0' : '110px 64px 0'}}>
       <div style={{
-        display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between',
-        marginBottom: 56, gap: 40,
+        display: 'flex',
+        flexDirection: mobile ? 'column' : 'row',
+        alignItems: mobile ? 'flex-start' : 'flex-end',
+        justifyContent: 'space-between',
+        marginBottom: mobile ? 32 : 56,
+        gap: mobile ? 16 : 40,
       }}>
         <h2 style={{
           margin: 0,
-          fontSize: 64, fontWeight: 700, letterSpacing: '-0.035em',
+          fontSize: mobile ? 36 : 64, fontWeight: 700, letterSpacing: '-0.035em',
           lineHeight: 1, maxWidth: 700,
         }}>
           Areas of <span style={{color: ACCENT}}>expertise</span>.
@@ -208,7 +278,9 @@ function AreasOfExpertise() {
       </div>
 
       <div style={{
-        display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 24,
+        display: 'grid',
+        gridTemplateColumns: mobile ? '1fr' : 'repeat(3, 1fr)',
+        gap: 24,
       }}>
         {cards.map((c, i) => (
           <div key={i} style={{
@@ -266,10 +338,13 @@ function AreasOfExpertise() {
 }
 
 function RevivalProof() {
+  const mobile = useIsMobile();
   return (
-    <div style={{padding: '120px 64px 0'}}>
+    <div style={{padding: mobile ? '60px 20px 0' : '120px 64px 0'}}>
       <div style={{
-        display: 'grid', gridTemplateColumns: '1fr 1.2fr', gap: 80,
+        display: 'grid',
+        gridTemplateColumns: mobile ? '1fr' : '1fr 1.2fr',
+        gap: mobile ? 40 : 80,
         alignItems: 'center',
       }}>
         <div>
@@ -281,7 +356,7 @@ function RevivalProof() {
             ★★★★★ — From the reviews
           </div>
           <div style={{
-            fontSize: 38, lineHeight: 1.2, letterSpacing: '-0.02em',
+            fontSize: mobile ? 26 : 38, lineHeight: 1.2, letterSpacing: '-0.02em',
             fontWeight: 600,
           }}>
             "Almost ready to dispose of my fridge —
@@ -297,7 +372,7 @@ function RevivalProof() {
           <div style={{
             marginTop: 36, display: 'flex', gap: 14, alignItems: 'center', flexWrap: 'wrap',
           }}>
-            <a href="#" style={{
+            <a href="https://www.google.com/search?client=ms-android-motorola-rvo3&sca_esv=ce94e24e788b5151&cs=0&sxsrf=ANbL-n6_56GjT5G3aAIXGFFjdVdNM_NPUg:1779278085765&si=AL3DRZEsmMGCryMMFSHJ3StBhOdZ2-6yYkXd_doETEE1OR-qOR3roYylx7z1hPWw8DHntcs80ndUU3z04yQ3vQHMo8RMDE8KMq4AlVS7mhzcspyzNXiGNdREKoqJLF7lPQMpvfFCJi7StwJKGMbv93Dm_QxNsS6jtw%3D%3D&q=Rodtech+Ventures+Ltd+Reviews&sa=X&ved=2ahUKEwiyxIiy58eUAxX33QIHHYmYATEQ0bkNegQIKhAF&biw=1536&bih=730&dpr=1.25" target="_blank" rel="noopener noreferrer" style={{
               display: 'inline-flex', alignItems: 'center', gap: 12,
               padding: '12px 20px', borderRadius: 999,
               background: '#fff', border: '1.5px solid #ebe8e1',
@@ -362,14 +437,15 @@ function RevivalProof() {
 }
 
 function MissionLine() {
+  const mobile = useIsMobile();
   return (
     <div style={{
-      padding: '140px 64px 60px',
+      padding: mobile ? '70px 20px 40px' : '140px 64px 60px',
       display: 'flex', justifyContent: 'center',
     }}>
       <div style={{
         maxWidth: 880, textAlign: 'center',
-        fontSize: 56, fontWeight: 700, lineHeight: 1.05,
+        fontSize: mobile ? 32 : 56, fontWeight: 700, lineHeight: 1.1,
         letterSpacing: '-0.03em',
       }}>
         At <span style={{color: ACCENT}}>Rodtech</span> we firmly
@@ -381,70 +457,61 @@ function MissionLine() {
 }
 
 function CTABand() {
+  const mobile = useIsMobile();
   return (
-    <div style={{padding: '40px 64px 110px'}}>
+    <div style={{padding: mobile ? '20px 20px 60px' : '40px 64px 110px'}}>
       <div style={{
-        background: INK, borderRadius: 28, padding: '64px 56px',
+        background: INK, borderRadius: 28, padding: mobile ? '60px 28px' : '80px 56px',
         color: '#f5f3ec', position: 'relative', overflow: 'hidden',
+        textAlign: 'center',
       }}>
         <div style={{
           position: 'absolute', top: -120, right: -80,
           width: 380, height: 380, borderRadius: '50%',
           background: `radial-gradient(circle, ${ACCENT}88 0%, transparent 65%)`,
         }}/>
-        <div style={{position: 'relative', display: 'grid', gridTemplateColumns: '1.3fr 1fr', gap: 60, alignItems: 'center'}}>
-          <div>
-            <div style={{
-              fontFamily: '"IBM Plex Mono", monospace',
-              fontSize: 11, letterSpacing: '0.18em', textTransform: 'uppercase',
-              opacity: 0.7, marginBottom: 18,
-              display: 'flex', alignItems: 'center', gap: 10,
-            }}>
-              <span style={{
-                width: 8, height: 8, borderRadius: '50%', background: '#5fd4a5',
-                boxShadow: '0 0 12px #5fd4a5',
-              }}/>
-              Available right now
-            </div>
-            <div style={{
-              fontSize: 56, fontWeight: 700, letterSpacing: '-0.03em',
-              lineHeight: 1.0,
-            }}>
-              Tell us what's<br/>
-              <span style={{color: '#5fd4a5'}}>broken.</span>
-            </div>
-            <div style={{
-              marginTop: 24, fontSize: 16, lineHeight: 1.5, opacity: 0.75,
-              maxWidth: 460,
-            }}>
-              Send a photo and a sentence on WhatsApp, or call
-              and we'll already know who to send.
-            </div>
+        <div style={{position: 'relative'}}>
+          <div style={{
+            fontFamily: '"IBM Plex Mono", monospace',
+            fontSize: 11, letterSpacing: '0.18em', textTransform: 'uppercase',
+            opacity: 0.7, marginBottom: 18,
+            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
+          }}>
+            <span style={{
+              width: 8, height: 8, borderRadius: '50%', background: '#5fd4a5',
+              boxShadow: '0 0 12px #5fd4a5',
+            }}/>
+            Available right now
           </div>
-          <div style={{display: 'flex', flexDirection: 'column', gap: 12}}>
-            <div style={{
-              padding: '22px 28px', borderRadius: 16, background: ACCENT,
-              color: '#fff', display: 'flex', alignItems: 'center',
-              justifyContent: 'space-between', gap: 24,
+          <div style={{
+            fontSize: mobile ? 36 : 56, fontWeight: 700, letterSpacing: '-0.03em',
+            lineHeight: 1.0,
+          }}>
+            Tell us what's<br/>
+            <span style={{color: '#5fd4a5'}}>broken.</span>
+          </div>
+          <div style={{
+            marginTop: 24, fontSize: mobile ? 15 : 16, lineHeight: 1.5, opacity: 0.75,
+            maxWidth: 460, margin: '24px auto 0',
+          }}>
+            Dan or one of the crew is on call twenty-four hours a day.
+            Call, WhatsApp, or drop a message — your choice.
+          </div>
+          <div style={{marginTop: 36}}>
+            <a href="Rodtech Contact.html" style={{
+              display: 'inline-flex', alignItems: 'center', gap: 14,
+              padding: '18px 32px', borderRadius: 999,
+              background: ACCENT, color: '#fff',
+              fontSize: 16, fontWeight: 600, textDecoration: 'none',
             }}>
-              <div>
-                <div style={{fontSize: 12, opacity: 0.8, letterSpacing: '0.06em', textTransform: 'uppercase'}}>Call</div>
-                <div style={{fontSize: 26, fontWeight: 700, marginTop: 4, letterSpacing: '-0.02em'}}>0793 562 956</div>
-              </div>
-              <span style={{fontSize: 22}}>→</span>
-            </div>
-            <div style={{
-              padding: '22px 28px', borderRadius: 16,
-              border: '1.5px solid rgba(245,243,236,0.25)',
-              color: '#f5f3ec', display: 'flex', alignItems: 'center',
-              justifyContent: 'space-between', gap: 24,
-            }}>
-              <div>
-                <div style={{fontSize: 12, opacity: 0.7, letterSpacing: '0.06em', textTransform: 'uppercase'}}>WhatsApp</div>
-                <div style={{fontSize: 18, fontWeight: 600, marginTop: 4}}>Send a photo of the issue</div>
-              </div>
-              <span style={{fontSize: 22}}>→</span>
-            </div>
+              Contact us
+              <span style={{
+                display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                width: 26, height: 26, borderRadius: '50%',
+                background: 'rgba(255,255,255,0.2)', color: '#fff',
+                fontSize: 14, fontWeight: 700,
+              }}>→</span>
+            </a>
           </div>
         </div>
       </div>
@@ -453,12 +520,14 @@ function CTABand() {
 }
 
 function Footer() {
+  const mobile = useIsMobile();
   return (
-    <div style={{padding: '0 64px 60px'}}>
+    <div style={{padding: mobile ? '0 20px 40px' : '0 64px 60px'}}>
       <div style={{
         borderTop: '1px solid #ebe8e1', paddingTop: 50,
-        display: 'grid', gridTemplateColumns: '1.4fr 1fr 1fr 1fr',
-        gap: 40,
+        display: 'grid',
+        gridTemplateColumns: mobile ? '1fr' : '1.4fr 1fr 1fr 1fr',
+        gap: mobile ? 32 : 40,
       }}>
         <div>
           <div style={{fontSize: 26, fontWeight: 700, letterSpacing: '-0.02em'}}>
@@ -470,12 +539,20 @@ function Footer() {
           </div>
         </div>
         <FooterCol title="Services" items={['Refrigeration', 'Electrical', 'Appliances', 'Solar & Inverters', 'Industrial']}/>
-        <FooterCol title="Company" items={['Services', 'About', 'Our Work', 'Get in Touch']}/>
+        <FooterCol title="Company" items={[
+          {label: 'Services', href: 'Rodtech Services.html'},
+          {label: 'About', href: 'Rodtech About.html'},
+          {label: 'Our Work', href: 'Rodtech Our Work.html'},
+          {label: 'Get in Touch', href: 'Rodtech Contact.html'},
+        ]}/>
         <FooterCol title="Contact" items={['0793 562 956', 'WhatsApp', 'hello@rodtech.co.ke', 'Bandaptai, Eldoret', 'Open 24 / 7']}/>
       </div>
       <div style={{
         marginTop: 50, paddingTop: 24, borderTop: '1px solid #ebe8e1',
-        display: 'flex', justifyContent: 'space-between',
+        display: 'flex',
+        flexDirection: mobile ? 'column' : 'row',
+        justifyContent: 'space-between',
+        gap: mobile ? 6 : 0,
         fontSize: 12, color: MUTED,
       }}>
         <span>© 2026 Rodtech Ventures Ltd</span>
@@ -496,9 +573,13 @@ function FooterCol({title, items}) {
         {title}
       </div>
       <div style={{display: 'flex', flexDirection: 'column', gap: 10}}>
-        {items.map((it, i) => (
-          <div key={i} style={{fontSize: 14, color: INK}}>{it}</div>
-        ))}
+        {items.map((it, i) => {
+          const label = typeof it === 'string' ? it : it.label;
+          const href = typeof it === 'object' && it.href ? it.href : null;
+          return href
+            ? <a key={i} href={href} style={{fontSize: 14, color: INK, textDecoration: 'none'}}>{label}</a>
+            : <div key={i} style={{fontSize: 14, color: INK}}>{label}</div>;
+        })}
       </div>
     </div>
   );
