@@ -608,7 +608,7 @@ function TestimonialsSection({accent}) {
       <div style={{
         marginTop: 36, display: 'flex', justifyContent: 'center',
       }}>
-        <a href="#" style={{
+        <a href="https://www.google.com/search?client=ms-android-motorola-rvo3&sca_esv=ce94e24e788b5151&cs=0&sxsrf=ANbL-n6_56GjT5G3aAIXGFFjdVdNM_NPUg:1779278085765&si=AL3DRZEsmMGCryMMFSHJ3StBhOdZ2-6yYkXd_doETEE1OR-qOR3roYylx7z1hPWw8DHntcs80ndUU3z04yQ3vQHMo8RMDE8KMq4AlVS7mhzcspyzNXiGNdREKoqJLF7lPQMpvfFCJi7StwJKGMbv93Dm_QxNsS6jtw%3D%3D&q=Rodtech+Ventures+Ltd+Reviews&sa=X&ved=2ahUKEwiyxIiy58eUAxX33QIHHYmYATEQ0bkNegQIKhAF&biw=1536&bih=730&dpr=1.25" target="_blank" rel="noopener noreferrer" style={{
           display: 'inline-flex', alignItems: 'center', gap: 12,
           padding: '14px 22px', borderRadius: 999,
           background: '#fff', border: '1.5px solid #ebe8e1',
