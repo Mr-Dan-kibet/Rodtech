@@ -425,11 +425,11 @@ function ServiceCard({name, desc, fixes, response}) {
         }}>
           ◐ {response}
         </div>
-        <div style={{
-          fontSize: 13, fontWeight: 600, color: INK,
+        <a href="Rodtech Contact.html" style={{
+          fontSize: 13, fontWeight: 600, color: INK, textDecoration: 'none',
         }}>
           Request →
-        </div>
+        </a>
       </div>
     </div>
   );
@@ -545,32 +545,20 @@ function ServicesCTA() {
             it's not our patch.
           </p>
         </div>
-        <div style={{
-          display: 'flex', flexDirection: 'column', gap: 12,
-        }}>
-          <div style={{
-            padding: '24px 28px', borderRadius: 18, background: ACCENT,
-            color: '#fff', display: 'flex', alignItems: 'center',
-            justifyContent: 'space-between', gap: 24,
+        <div>
+          <a href="Rodtech Contact.html" style={{
+            display: 'inline-flex', alignItems: 'center', gap: 14,
+            padding: '18px 32px', borderRadius: 999,
+            background: INK, color: '#fff',
+            fontSize: 16, fontWeight: 600, textDecoration: 'none',
           }}>
-            <div>
-              <div style={{fontSize: 12, opacity: 0.85, letterSpacing: '0.06em', textTransform: 'uppercase'}}>Call</div>
-              <div style={{fontSize: mobile ? 22 : 26, fontWeight: 700, marginTop: 4, letterSpacing: '-0.02em'}}>0793 562 956</div>
-            </div>
-            <span style={{fontSize: 22}}>→</span>
-          </div>
-          <div style={{
-            padding: '24px 28px', borderRadius: 18,
-            border: '1.5px solid #e3e0d6', color: INK,
-            display: 'flex', alignItems: 'center',
-            justifyContent: 'space-between', gap: 24,
-          }}>
-            <div>
-              <div style={{fontSize: 12, color: MUTED, letterSpacing: '0.06em', textTransform: 'uppercase'}}>WhatsApp</div>
-              <div style={{fontSize: 18, fontWeight: 600, marginTop: 4}}>Send a photo of the issue</div>
-            </div>
-            <span style={{fontSize: 22, color: ACCENT}}>→</span>
-          </div>
+            Contact us
+            <span style={{
+              display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+              width: 26, height: 26, borderRadius: '50%', background: ACCENT, color: '#fff',
+              fontSize: 14, fontWeight: 700,
+            }}>→</span>
+          </a>
         </div>
       </div>
     </div>
