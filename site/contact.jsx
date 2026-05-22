@@ -404,32 +404,50 @@ function IntakeForm({accent}) {
           </div>
         </div>
 
-        <form style={{
-          border: '1px solid #ebe8e1', borderRadius: 24,
-          padding: mobile ? '28px 24px' : '36px 40px 32px',
-          display: 'flex', flexDirection: 'column', gap: 24,
-        }} onSubmit={(e) => e.preventDefault()}>
+        {/* ── Netlify Forms: name + data-netlify required. onSubmit posts to Netlify then redirects. ── */}
+        <form
+          name="contact"
+          data-netlify="true"
+          style={{
+            border: '1px solid #ebe8e1', borderRadius: 24,
+            padding: mobile ? '28px 24px' : '36px 40px 32px',
+            display: 'flex', flexDirection: 'column', gap: 24,
+          }}
+          onSubmit={(e) => {
+            e.preventDefault();
+            fetch('/', {
+              method: 'POST',
+              headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+              body: new URLSearchParams(new FormData(e.target)).toString(),
+            })
+              .then(() => { window.location.href = '/thank-you.html'; })
+              .catch(() => { alert('Something went wrong. Please try calling or WhatsApp instead.'); });
+          }}
+        >
+          {/* Required hidden field for Netlify Forms with React */}
+          <input type="hidden" name="form-name" value="contact" />
+
           <FormRow>
             <Field label="Full name">
-              <TextInput placeholder="e.g. Naomi Kiprop" required accent={accent}/>
+              <TextInput name="full-name" placeholder="e.g. Naomi Kiprop" required accent={accent}/>
             </Field>
           </FormRow>
 
           <FormRow cols="1fr 1fr">
             <Field label="Email">
-              <TextInput type="email" placeholder="you@example.com" required accent={accent}/>
+              <TextInput name="email" type="email" placeholder="you@example.com" required accent={accent}/>
             </Field>
             <Field label="Phone" hint="Optional">
-              <TextInput type="tel" placeholder="07XX XXX XXX" accent={accent}/>
+              <TextInput name="phone" type="tel" placeholder="07XX XXX XXX" accent={accent}/>
             </Field>
           </FormRow>
 
           <FormRow cols="1fr 1fr">
             <Field label="Location">
-              <TextInput placeholder="e.g. Eldoret town, Pioneer estate" required accent={accent}/>
+              <TextInput name="location" placeholder="e.g. Eldoret town, Pioneer estate" required accent={accent}/>
             </Field>
             <Field label="What's it about?">
-              <SelectInput accent={accent} options={[
+              <SelectInput name="service" accent={accent} options={[
                 'Refrigeration repair',
                 'Electrical / wiring',
                 'Generator or solar',
@@ -442,7 +460,7 @@ function IntakeForm({accent}) {
           </FormRow>
 
           <Field label="Tell us more" hint="A sentence or two is plenty">
-            <textarea rows={4}
+            <textarea rows={4} name="message"
               placeholder="e.g. The freezer isn't cooling. Compressor sounds like it's running but everything is at room temp." style={{
               width: '100%', border: '1.5px solid #ebe8e1', borderRadius: 12,
               padding: '14px 16px', boxSizing: 'border-box', resize: 'vertical',
@@ -526,9 +544,9 @@ function Field({label, hint, children}) {
   );
 }
 
-function TextInput({type = 'text', placeholder, required, accent}) {
+function TextInput({type = 'text', placeholder, required, accent, name}) {
   return (
-    <input type={type} placeholder={placeholder} required={required} style={{
+    <input type={type} placeholder={placeholder} required={required} name={name} style={{
       width: '100%', border: '1.5px solid #ebe8e1', borderRadius: 12,
       padding: '14px 16px', boxSizing: 'border-box',
       fontFamily: '"DM Sans", sans-serif', fontSize: 15,
@@ -541,9 +559,9 @@ function TextInput({type = 'text', placeholder, required, accent}) {
   );
 }
 
-function SelectInput({options, accent}) {
+function SelectInput({options, accent, name}) {
   return (
-    <select defaultValue="" required style={{
+    <select defaultValue="" required name={name} style={{
       width: '100%', border: '1.5px solid #ebe8e1', borderRadius: 12,
       padding: '14px 16px', boxSizing: 'border-box',
       fontFamily: '"DM Sans", sans-serif', fontSize: 15,
