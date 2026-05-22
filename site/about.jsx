@@ -11,7 +11,7 @@
 
 const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
   "accent": "#0C6B4F",
-  "ownerName": "Dan Bundotich",
+  "ownerName": "Dan Kibochi",
   "ownerRole": "Founder & Lead Technician",
   "foundedYear": "2019",
   "teamSize": "3",
