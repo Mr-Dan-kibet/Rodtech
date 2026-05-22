@@ -19,8 +19,10 @@ const CASES = [
     service: 'Refrigeration',
     image: 'images/freezer-repair.webp',
     imagePos: 'center 30%',
+    mobileImagePos: 'center 50%',
     story: "A deep freezer that had been off for over a year. Compressor still good — gas leak and a failed thermostat. Re-charged and running cold by the afternoon.",
     aspect: '3/4',
+    mobileAspect: '4/3',
   },
   {
     n: '02',
@@ -41,6 +43,7 @@ const CASES = [
     imagePos: 'center center',
     story: "Original compressor seized during a hot week in March. Sourced a compatible R22 unit, swapped and re-gassed without losing the day's stock.",
     aspect: '3/4',
+    mobileAspect: '4/3',
   },
   {
     n: '04',
@@ -215,7 +218,7 @@ function WorkHeader() {
   );
 }
 
-function CaseSpread({n, title, when, service, image, imagePos, story, aspect, index}) {
+function CaseSpread({n, title, when, service, image, imagePos, mobileImagePos, story, aspect, mobileAspect, index}) {
   const mobile = useIsMobile();
   // Alternate layout — image-right on even indexes, image-left on odd (desktop only)
   const imageRight = index % 2 === 0;
@@ -235,7 +238,7 @@ function CaseSpread({n, title, when, service, image, imagePos, story, aspect, in
         {!mobile && !imageRight && <CaseImage src={image} pos={imagePos} aspect={aspect} n={n}/>}
 
         {/* On mobile, image always appears first */}
-        {mobile && <CaseImage src={image} pos={imagePos} aspect={mobile ? '16/9' : aspect} n={n}/>}
+        {mobile && <CaseImage src={image} pos={mobileImagePos || imagePos} aspect={mobileAspect || '16/9'} n={n}/>}
 
         <div>
           <div style={{
