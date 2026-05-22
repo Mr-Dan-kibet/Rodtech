@@ -415,7 +415,7 @@ function IntakeForm({accent}) {
           }}
           onSubmit={(e) => {
             e.preventDefault();
-            fetch('/', {
+            fetch('/Rodtech%20Contact.html', {
               method: 'POST',
               headers: {'Content-Type': 'application/x-www-form-urlencoded'},
               body: new URLSearchParams(new FormData(e.target)).toString(),
