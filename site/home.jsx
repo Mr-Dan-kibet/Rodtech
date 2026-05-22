@@ -526,10 +526,13 @@ function Footer() {
       <div style={{
         borderTop: '1px solid #ebe8e1', paddingTop: 50,
         display: 'grid',
-        gridTemplateColumns: mobile ? '1fr' : '1.4fr 1fr 1fr 1fr',
-        gap: mobile ? 32 : 40,
+        gridTemplateColumns: mobile ? '1fr 1fr' : '1.4fr 1fr 1fr 1fr',
+        rowGap: mobile ? 32 : 40, columnGap: mobile ? 0 : 40,
       }}>
-        <div>
+        <div style={{
+          paddingRight: mobile ? 24 : 0,
+          borderRight: mobile ? '1px solid #ebe8e1' : 'none',
+        }}>
           <div style={{fontSize: 26, fontWeight: 700, letterSpacing: '-0.02em'}}>
             rod<span style={{color: ACCENT}}>tech</span>
           </div>
@@ -538,14 +541,14 @@ function Footer() {
             North Rift region of Kenya since 2019.
           </div>
         </div>
-        <FooterCol title="Services" items={['Refrigeration', 'Electrical', 'Appliances', 'Solar & Inverters', 'Industrial']}/>
+        <FooterCol title="Services" items={['Refrigeration', 'Electrical', 'Appliances', 'Solar & Inverters', 'Industrial']} style={{paddingLeft: mobile ? 24 : 0}}/>
         <FooterCol title="Company" items={[
           {label: 'Services', href: 'Rodtech Services.html'},
           {label: 'About', href: 'Rodtech About.html'},
           {label: 'Our Work', href: 'Rodtech Our Work.html'},
           {label: 'Get in Touch', href: 'Rodtech Contact.html'},
         ]}/>
-        <FooterCol title="Contact" items={['0793 562 956', 'WhatsApp', 'hello@rodtech.co.ke', 'Bandaptai, Eldoret', 'Open 24 / 7']}/>
+        <FooterCol title="Contact" items={['0793 562 956', 'WhatsApp', 'hello@rodtech.co.ke', 'Bandaptai, Eldoret', 'Open 24 / 7']} style={{paddingLeft: mobile ? 24 : 0}}/>
       </div>
       <div style={{
         marginTop: 50, paddingTop: 24, borderTop: '1px solid #ebe8e1',
@@ -562,9 +565,9 @@ function Footer() {
   );
 }
 
-function FooterCol({title, items}) {
+function FooterCol({title, items, style}) {
   return (
-    <div>
+    <div style={style}>
       <div style={{
         fontFamily: '"IBM Plex Mono", monospace', fontSize: 10,
         letterSpacing: '0.16em', textTransform: 'uppercase',
