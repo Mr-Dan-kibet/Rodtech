@@ -148,14 +148,14 @@ function Hero() {
         }}>
           The 24/7 repair workshop reviving the appliances you'd
           given up on. From a single fridge in a home kitchen to
-          cold rooms, generators, and bakery ovens — we diagnose
+          cold rooms, generators, and bakery ovens. We diagnose
           on-site and repair the same day.
         </p>
         <p style={{
           marginTop: 18, marginBottom: 0, maxWidth: 480,
           fontSize: mobile ? 15 : 17, lineHeight: 1.55, color: '#3a3a4a',
         }}>
-          Based in Bandaptai, Eldoret — covering the North Rift,
+          Based in Bandaptai, Eldoret covering the North Rift,
           with 4.8★ across 64 verified Google reviews.
         </p>
       </div>

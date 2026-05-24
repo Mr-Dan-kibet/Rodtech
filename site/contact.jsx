@@ -313,7 +313,7 @@ function ContactMethods({accent, phone, whatsappLabel}) {
             <div style={{
               fontSize: 13, color: MUTED, marginTop: 10,
             }}>
-              Great for non-urgent — we'll triage before the visit.
+              Great for non-urgent problems, we'll triage before the visit.
             </div>
           </div>
           <a href={`https://wa.me/${phone.replace(/\s/g, '').replace(/^0/, '254')}?text=Hello%20Rodtech!%20I%27d%20like%20help%20with%20an%20appliance%20repair.`} target="_blank" rel="noopener noreferrer" style={{

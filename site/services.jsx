@@ -41,11 +41,11 @@ function RodtechServices() {
         id="refrigeration"
         eyebrow="01 — Refrigeration"
         title="Anything that keeps cold."
-        body="Most calls we get are refrigeration. Compressor failures, gas leaks, frost build-up, thermostats that have given up — we've seen all of it. On-site diagnosis is free if you go ahead with the repair."
+        body="Most calls we get are refrigeration. Compressor failures, gas leaks, frost build-up, thermostats that have given up we've seen all of it. On-site diagnosis is free if you go ahead with the repair."
         items={[
           {
             name: 'Domestic fridges & freezers',
-            desc: 'Single-door, double-door, side-by-side, chest freezers.',
+            desc: 'Single door, double door, side-by-side, chest freezers.',
             fixes: ['Compressor failure', 'Gas re-charge', 'Thermostat', 'Door seal & gasket'],
             response: 'Same day · most jobs',
           },
@@ -79,7 +79,7 @@ function RodtechServices() {
         id="electrical"
         eyebrow="02 — Electrical & Power"
         title="The power side of the business."
-        body="From a wiring fault in a house to a hospital generator that won't start, we cover the whole power side. Includes solar — Eldoret gets enough sun that off-grid and hybrid setups are now the norm, and they need service like anything else."
+        body="From a wiring fault in a house to a hospital generator that won't start, we cover the whole power side. Includes solar Eldoret gets enough sun that off-grid and hybrid setups are now the norm, and they need service like anything else."
         items={[
           {
             name: 'Wiring & fault-finding',
@@ -89,7 +89,7 @@ function RodtechServices() {
           },
           {
             name: 'Generators',
-            desc: 'Petrol, diesel, gas — domestic up to commercial scale.',
+            desc: 'Petrol, diesel, gas from domestic up to commercial scale.',
             fixes: ['Won\'t start', 'AVR failure', 'Battery replacement', 'Routine service'],
             response: 'Priority · 4-hour callout',
           },
@@ -117,7 +117,7 @@ function RodtechServices() {
         id="appliances"
         eyebrow="03 — Home Appliances"
         title="The things you use every day."
-        body="Washers, dryers, cookers — the appliances that quietly run a household until they don't. Most of these have a single failing part. We carry the common ones in the van."
+        body="Washers, dryers, cookers all the appliances that quietly run a household until they don't. Most of these have a single failing part. We carry the common ones in the van."
         items={[
           {
             name: 'Washing machines',
@@ -151,7 +151,7 @@ function RodtechServices() {
           },
           {
             name: 'Televisions',
-            desc: 'LED, LCD and smart TVs — home and commercial.',
+            desc: 'LED, LCD and smart TVs both home and commercial.',
             fixes: ["Won't power on", 'No picture / backlight', 'HDMI & ports', 'Sound faults'],
             response: 'Same day · most jobs',
           },
@@ -276,8 +276,8 @@ function PageHeader() {
         <div style={{
           fontSize: mobile ? 15 : 17, lineHeight: 1.55, color: '#3a3a4a', maxWidth: 420,
         }}>
-          Three practices, around fifteen services. Most jobs are
-          done on the spot — same day for almost everything inside
+          Three practices, over fifteen services. Most jobs are
+          done on the spot same day for almost everything inside
           Eldoret. Below is the full list, with the failure modes
           we see most often under each.
         </div>
@@ -294,9 +294,9 @@ function JumpBar() {
       borderTop: '1px solid #ebe8e1', borderBottom: '1px solid #ebe8e1',
       padding: '20px 0', display: 'flex', gap: 12, flexWrap: 'wrap',
     }}>
-      <a href="#refrigeration" style={{textDecoration: 'none', color: 'inherit'}}><JumpPill label="Refrigeration" count="5 services" active/></a>
-      <a href="#electrical" style={{textDecoration: 'none', color: 'inherit'}}><JumpPill label="Electrical & Power" count="5 services"/></a>
-      <a href="#appliances" style={{textDecoration: 'none', color: 'inherit'}}><JumpPill label="Home Appliances" count="6 services"/></a>
+      <a href="#refrigeration" style={{textDecoration: 'none', color: 'inherit'}}><JumpPill label="Refrigeration" count="5+ services" active/></a>
+      <a href="#electrical" style={{textDecoration: 'none', color: 'inherit'}}><JumpPill label="Electrical & Power" count="5+ services"/></a>
+      <a href="#appliances" style={{textDecoration: 'none', color: 'inherit'}}><JumpPill label="Home Appliances" count="6+ services"/></a>
       <a href="#industrial" style={{textDecoration: 'none', color: 'inherit'}}><JumpPill label="Industrial & Commercial" count="On request"/></a>
     </div>
   );
@@ -462,7 +462,7 @@ function IndustrialCallout() {
             marginTop: 22, marginBottom: 0, fontSize: mobile ? 15 : 16, lineHeight: 1.55,
             opacity: 0.75, maxWidth: 480,
           }}>
-            Larger-scale commercial work is quoted job-by-job —
+            Larger-scale commercial work is quoted job-by-job,
             commercial laundry, bakery production lines, hotel
             cold chains, butchery cold rooms. Call us to walk
             through what you have.
@@ -530,7 +530,7 @@ function ServicesCTA() {
             color: MUTED, maxWidth: 460,
           }}>
             The list above is what we get called for most. If
-            yours isn't there, call us anyway — we've seen
+            yours isn't there, call us anyway. We've seen
             stranger things, and we'll tell you honestly if
             it's not our patch.
           </p>

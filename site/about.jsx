@@ -319,9 +319,9 @@ function StorySection({accent}) {
             }}>
               <p style={{margin: 0}}>
                 A fridge that needed a new compressor would be replaced.
-                A washer with a small part would be thrown out. We saw
+                A washer with a small problem would be thrown out. We saw
                 it on every job and started Rodtech in 2019 to do
-                something about it — proper diagnosis first, an
+                something about it, we adopted the model; proper diagnosis first, an
                 honest repair second, and a replacement only when
                 it genuinely makes sense.
               </p>
@@ -452,7 +452,7 @@ function HowWeWork({accent}) {
     {
       n: '01',
       title: 'We diagnose before we touch.',
-      body: "Every job starts with a free on-site diagnosis. You get a fixed quote before we open anything up — no surprises on the invoice.",
+      body: "Every job starts with a free on-site diagnosis. You get a fixed quote before we open anything up, no surprises on the invoice.",
     },
     {
       n: '02',
@@ -462,12 +462,12 @@ function HowWeWork({accent}) {
     {
       n: '03',
       title: 'Same crew, every time.',
-      body: "Five technicians, no sub-contractors. The person who diagnoses your fridge is the one who fixes it and signs off on the work.",
+      body: "Five technicians, no subcontractors. The person who diagnoses your fridge is the one who fixes it and signs off on the work.",
     },
     {
       n: '04',
       title: '30 days on every part.',
-      body: "Anything we replace carries a 30-day guarantee. If it fails again on that part, we come back, no charge.",
+      body: "Anything we replace carries a 30 day guarantee. If it fails again on that part, we come back.",
     },
   ];
   return (
@@ -672,8 +672,8 @@ function ServiceArea({accent}) {
               opacity: 0.75, maxWidth: 460,
             }}>
               Eldoret is our base. If you can get to us by road, we
-              can get to you. For commercial work further afield —
-              hotels and bakeries in the wider region — we plan
+              can get to you. For commercial work further afield like
+              hotels and bakeries in the wider region, we plan
               the visit and quote travel separately.
             </p>
           </div>

@@ -20,7 +20,7 @@ const CASES = [
     image: 'images/freezer-repair.webp',
     imagePos: 'center 30%',
     mobileImagePos: 'center 50%',
-    story: "A deep freezer that had been off for over a year. Compressor still good — gas leak and a failed thermostat. Re-charged and running cold by the afternoon.",
+    story: "A deep freezer that had been off for over a year. Compressor still good, gas leak and a failed thermostat. Recharged and running cold by the afternoon.",
     aspect: '3/4',
     mobileAspect: '4/3',
   },
@@ -41,7 +41,7 @@ const CASES = [
     service: 'Refrigeration',
     image: 'images/compressor-r22.jpg',
     imagePos: 'center center',
-    story: "Original compressor seized during a hot week in March. Sourced a compatible R22 unit, swapped and re-gassed without losing the day's stock.",
+    story: "Original compressor seized during a hot week in March. Sourced a compatible R22 unit, swapped and regassed without losing the day's stock.",
     aspect: '3/4',
     mobileAspect: '4/3',
   },
@@ -199,7 +199,7 @@ function WorkHeader() {
           fontSize: mobile ? 15 : 17, lineHeight: 1.55, color: '#3a3a4a', maxWidth: 420,
         }}>
           Four cases out of the hundreds we've worked on since 2019.
-          Picked because each shows something specific — a part
+          Picked because each shows something specific, a part
           replaced, a freezer revived, a commercial line saved
           from a day of lost stock.
         </div>
